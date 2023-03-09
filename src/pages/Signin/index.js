@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text , TouchableOpacity, TextInput, StyleSheet} from 'react-native';
+import { View, Text , TouchableOpacity, TextInput, StyleSheet, StatusBar} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 export default function SignIn() {
   return (
@@ -9,13 +9,13 @@ export default function SignIn() {
       </Animatable.View>
       <Animatable.View animation='fadeInRight' style={styles.containerForm}>
       <Text style={styles.title}>CPF </Text>
-        <TextInput style={styles.input}></TextInput>  
+        <TextInput keyboardType='decimal-pad' style={styles.input}></TextInput>  
       <Text style={styles.title}>Senha </Text>
-        <TextInput style={styles.input}></TextInput>  
-        <TouchableOpacity>
-          <Text>Acessar</Text>
+        <TextInput  secureTextEntry={true} style={styles.input}></TextInput>  
+        <TouchableOpacity style={styles.button}> 
+          <Text style={styles.textButton}>Acessar</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity style={styles.register}>
           <Text>Criar uma conta</Text>
         </TouchableOpacity>
       </Animatable.View> 
@@ -59,5 +59,23 @@ const styles = StyleSheet.create({
     marginBottom: '2%',
     fontSize: 20,
     fontWeight: 'bold'
+  },
+  button: {
+    backgroundColor: '#404040',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 14,
+    paddingVertical: 8,
+    borderRadius: 4, 
+  },
+  textButton: {
+    color: '#fff'
+
+  }, 
+  register: {
+    alignItems: 'center',
+    marginTop: 14
   }
+
 });
