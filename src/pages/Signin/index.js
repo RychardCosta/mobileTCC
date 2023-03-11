@@ -1,21 +1,64 @@
-import React from 'react';
-import { View, Text , TouchableOpacity, TextInput, StyleSheet, StatusBar} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text , TouchableOpacity, TextInput, StyleSheet} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native'
 
 import * as Animatable from 'react-native-animatable';
+
+import api from "../../services/api.js"
+
+
 export default function SignIn() {
   const navigation = useNavigation();
+    const [cpf, setCpf] = useState(null);
+    const [senha, setSenha] = useState(null);
+
+
+      const handleSubmitAcessar =  async ()=>{
+         const response = await api.post("/login",{
+          cpf,
+          senha
+        }).catch(error => console.log(error));
+        if(response.data.message === "Login feito com sucesso!"){
+          navigation.navigate("Welcome")
+          console.log(response.data.user)
+          await AsyncStorage.setItem('cpf', response.data.user.cpf);
+          await AsyncStorage.setItem('nome', response.data.user.nome);
+          await AsyncStorage.setItem('sobrenome', response.data.user.sobrenome);
+          await AsyncStorage.setItem('pontuacao', response.data.user.pontuacao);
+          await AsyncStorage.setItem('tipoDeConta', response.data.user.tipoDeConta);
+          if(response.data.user.professorId){
+            await AsyncStorage.setItem('professorId', response.data.user.professorId);
+          }
+        }else{
+          console.log(response.data.message)
+        }
+    
+      
+     
+  }
+  
+
   return (
     <View style={styles.container}> 
       <Animatable.View animation="fadeInLeft" style={styles.containerHeader}>
-      <Text style={styles.message}> BEM-VINDO(a) </Text>
+      <Text style={styles.message}> BEM-VINDO(a) </Text>  
       </Animatable.View>
       <Animatable.View animation='fadeInRight' style={styles.containerForm}>
       <Text style={styles.title}>CPF </Text>
-        <TextInput keyboardType='decimal-pad' style={styles.input}></TextInput>  
+        <TextInput 
+          keyboardType='decimal-pad'
+          style={styles.input}
+          onChangeText={setCpf} />  
       <Text style={styles.title}>Senha </Text>
-        <TextInput  secureTextEntry={true} style={styles.input}></TextInput>  
-        <TouchableOpacity style={styles.button}> 
+        <TextInput 
+        secureTextEntry={true} 
+        style={styles.input}
+        onChangeText={setSenha}/>  
+
+        <TouchableOpacity 
+        onPress={handleSubmitAcessar}
+        style={styles.button}> 
           <Text style={styles.textButton}>Acessar</Text>
         </TouchableOpacity>
         <TouchableOpacity 
