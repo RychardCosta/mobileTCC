@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { View, Text , TouchableOpacity, TextInput, StyleSheet,Alert } from 'react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native'
 
@@ -25,7 +26,7 @@ export default function SignIn() {
           await AsyncStorage.setItem('cpf', response.data.user.cpf);
           await AsyncStorage.setItem('nome', response.data.user.nome);
           await AsyncStorage.setItem('sobrenome', response.data.user.sobrenome);
-          await AsyncStorage.setItem('pontuacao', response.data.user.pontuacao);
+          await AsyncStorage.setItem('pontuacao', String.toString(response.data.user.pontuacao));
           await AsyncStorage.setItem('tipoDeConta', response.data.user.tipoDeConta);
           if(response.data.user.professorId){
             await AsyncStorage.setItem('professorId', response.data.user.professorId);
@@ -44,14 +45,10 @@ export default function SignIn() {
             ]
           ); 
         }
-    
-      
-     
+         
   }
-  
-
-  return (
-    <View style={styles.container}> 
+    return (
+    <View style={styles.container}>
       <Animatable.View animation="fadeInLeft" style={styles.containerHeader}>
       <Text style={styles.message}> BEM-VINDO(a) </Text>  
       </Animatable.View>
@@ -90,7 +87,9 @@ const styles = StyleSheet.create({
   containerHeader: {
     marginTop: '14%',
     marginBottom: '8%',
-    paddingStart: '5%'
+    paddingStart: '5%',
+    justifyContent: "flex-end",
+
   },
   message: {
     fontSize: 28,
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25 ,
     borderTopRightRadius: 25 ,
     paddingStart: '5%',
-    paddingEnd: '5%'
+    paddingEnd: '5%',
   },
   input: {
     borderWidth: 1,
