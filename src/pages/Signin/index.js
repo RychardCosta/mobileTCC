@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { View, Text , TouchableOpacity, TextInput, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import { View, Text , TouchableOpacity, TextInput, StyleSheet,Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native'
 
@@ -32,6 +32,17 @@ export default function SignIn() {
           }
         }else{
           console.log(response.data.message)
+          Alert.alert(
+            'Login inválido',
+            'Nome de usuário ou senha incorretos.',
+            [
+              {
+                text: 'Ok',
+                onPress: () => console.log('Botão 1 Pressionado')
+              }
+           
+            ]
+          ); 
         }
     
       
