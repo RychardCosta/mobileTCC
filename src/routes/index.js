@@ -5,6 +5,7 @@ import SignIn from '../pages/Signin'
 import Signup from '../pages/Signup'
 import MainProfessor from '../pages/MainProfessor'
 import MainAluno from '../pages/MainAluno'
+import SignupAluno from '../pages/SignupAluno'
 
 
 const Stack = createStackNavigator();
@@ -23,14 +24,26 @@ export default function Routes(){
             <Stack.Screen 
              name='Signup'
             component={Signup} 
-            options={{title: 'Cadastro',
+            options={{title: 'Cadastro de professor',
         }}
-          
-            />
+          />
+       
+            <Stack.Screen 
+             name='SignupAluno'
+            component={SignupAluno} 
+            options={{title: 'Cadastro de aluno',
+        }}
+          />
         <Stack.Screen 
         name='MainProfessor'
         component={MainProfessor}
         options={{headerShown:false}} />
+        <Stack.Screen 
+        name='MainAluno'
+        component={MainAluno}
+        options={{headerShown:false}} />
+        
+        
         </Stack.Navigator>
 
     )

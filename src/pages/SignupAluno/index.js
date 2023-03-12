@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import { Alert, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements'
 import {useNavigation} from '@react-navigation/native'
@@ -6,10 +6,11 @@ import api from "../../services/api.js"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
+
 import * as Animatable from 'react-native-animatable';
 
 
-export default function Signup() {
+export default function SignupAluno() {
   const navigation = useNavigation();
   const height = useHeaderHeight()
 
@@ -18,21 +19,29 @@ export default function Signup() {
   const [sobrenome, setSobrenome] = useState();
   const [senha, setSenha] = useState();
   const [repetirSenha, setRepetirSenha] = useState();
+  const [professorId, setProfessorId] = useState();
+  
+
+  useEffect(() => {
+    AsyncStorage.getItem('cpf').then(cpf => {
+        setProfessorId(cpf)
+         }, [])
+});
+
 
 
   const handleSubimit = async () => {
 
      try {
-      
       if(cpfIsValid(cpf)){
-        console.log("Chegou aqui")
         if(senha === repetirSenha){
          const user = {
            cpf,
            nome,
            sobrenome,
-           tipoDeConta: "professor",
-           senha
+           tipoDeConta: "aluno",
+           senha, 
+           professorId
           }
           const response = await api.post("/signup", user).catch(error => console.log(error));
           if(response.data.message === "Usuário já cadastrado!"){
@@ -50,15 +59,17 @@ export default function Signup() {
       
           }else{
             console.log(response.data.user)
-            await AsyncStorage.setItem('cpf', response.data.user.cpf);
-            await AsyncStorage.setItem('nome', response.data.user.nome);
-            await AsyncStorage.setItem('sobrenome', response.data.user.sobrenome);
-            await AsyncStorage.setItem('tipoDeConta', response.data.user.tipoDeConta);
-            await AsyncStorage.setItem('pontuacao', String.toString(response.data.user.pontuacao));
-            if(response.data.user.professorId){
-              await AsyncStorage.setItem('professorId', response.data.user.professorId);
-            }        
-            navigation.navigate("MainProfessor")
+             Alert.alert(
+              'Sucesso!',
+              'Aluno cadastrado com sucesso!.',
+              [
+                {
+                  text: 'Ok',
+                  onPress: () => navigation.navigate("MainProfessor")
+                }
+             
+              ]
+            )
           }
         }else{
          Alert.alert(
@@ -113,7 +124,8 @@ export default function Signup() {
         console.log('CPF deve ter 11 digitos')
         return false
       }
-       return true
+      console.log("Deu certo")
+      return true
     }
 
 

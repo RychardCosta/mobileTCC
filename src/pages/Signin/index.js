@@ -21,7 +21,6 @@ export default function SignIn() {
           senha
         }).catch(error => console.log(error));
         if(response.data.message === "Login feito com sucesso!"){
-          navigation.navigate("Welcome")
           console.log(response.data.user)
           await AsyncStorage.setItem('cpf', response.data.user.cpf);
           await AsyncStorage.setItem('nome', response.data.user.nome);
@@ -30,6 +29,11 @@ export default function SignIn() {
           await AsyncStorage.setItem('tipoDeConta', response.data.user.tipoDeConta);
           if(response.data.user.professorId){
             await AsyncStorage.setItem('professorId', response.data.user.professorId);
+          }
+          if(response.data.user.tipoDeConta === "professor"){
+            navigation.navigate("MainProfessor")
+          }else{
+            navigation.navigate("MainAluno")
           }
         }else{
           console.log(response.data.message)
@@ -45,6 +49,8 @@ export default function SignIn() {
             ]
           ); 
         }
+
+        
          
   }
     return (
