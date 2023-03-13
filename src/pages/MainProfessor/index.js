@@ -78,6 +78,26 @@ export default function MainProfessor() {
          } 
         }
        
+        const handleSubmitSair = async () =>{
+          try {  await AsyncStorage.removeItem('cpf');
+          await AsyncStorage.removeItem('nome');
+          await AsyncStorage.removeItem('sobrenome');
+          await AsyncStorage.removeItem('pontuacao');
+          await AsyncStorage.removeItem('tipoDeConta');
+          await AsyncStorage.removeItem('professorId');
+          navigation.navigate("Welcome")
+          
+          
+        } catch (error) {
+          console.log(error)
+          navigation.navigate("Welcome")
+            
+          }
+        
+       
+
+        }
+
      
                     
 
@@ -88,30 +108,33 @@ export default function MainProfessor() {
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
     }>
       <View>
-        <Text style={styles.textHeader}> Bem vindo {nome}</Text>
+        <Text style={styles.textHeader}> Bem vindo {nome} </Text>
         <Text style={styles.textHeader2}> Quantidade de alunos: {quantidadeDeAlunos}</Text>
         <Text style={styles.textHeader2}> Quantidade de categorias: {quantidadeDeCategorias}</Text>
         <Text style={styles.textHeader2}> Quantidade de perguntas: {quantidadeDePerguntas}</Text>
       </View>
       <View style={styles.containerForm}>
         <Text style={styles.text}>Escolha uma das opções abaixo</Text>
-        <TouchableOpacity style={styles.input}>
+        <TouchableOpacity style={styles.input} onPress={() => navigation.navigate("Jogo")}>
           <Text style={styles.textInput}>Executar jogo</Text>
           </TouchableOpacity>
         <TouchableOpacity style={styles.input} onPress={() => navigation.navigate("SignupAluno")}>
           <Text style={styles.textInput}>Cadastrar aluno</Text>
           </TouchableOpacity>
-        <TouchableOpacity style={styles.input}>
+        <TouchableOpacity style={styles.input} onPress={() => navigation.navigate("CadastrarCategoria")}>
           <Text style={styles.textInput}>Cadastrar categoria</Text>
           </TouchableOpacity>
-        <TouchableOpacity style={styles.input}>
+        <TouchableOpacity style={styles.input} onPress={() => navigation.navigate("CadastrarPergunta")}>
           <Text style={styles.textInput}>Cadastrar pergunta</Text>
           </TouchableOpacity>
         <TouchableOpacity style={styles.input}>
           <Text style={styles.textInput}>Mostrar rank</Text>
           </TouchableOpacity>
+        <TouchableOpacity style={styles.input}>
+          <Text style={styles.textInput} onPress={handleSubmitSair}>SAIR</Text>
+          </TouchableOpacity>
 
-     
+          <TouchableOpacity><Text>Oi</Text></TouchableOpacity>
       </View>
      </ScrollView>
   );

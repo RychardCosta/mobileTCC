@@ -6,6 +6,9 @@ import Signup from '../pages/Signup'
 import MainProfessor from '../pages/MainProfessor'
 import MainAluno from '../pages/MainAluno'
 import SignupAluno from '../pages/SignupAluno'
+import Jogo from '../pages/Jogo'
+import CadastrarCategoria from '../pages/CadastrarCategoria'
+import CadastrarPergunta from '../pages/CadastrarPergunta'
 
 
 const Stack = createStackNavigator();
@@ -42,6 +45,21 @@ export default function Routes(){
         name='MainAluno'
         component={MainAluno}
         options={{headerShown:false}} />
+        
+        <Stack.Screen 
+        name='Jogo'
+        component={Jogo}
+        options={{headerShown:false}} />
+        
+        <Stack.Screen 
+        name='CadastrarCategoria'
+        component={CadastrarCategoria}
+        options={{headerShown:true}} />
+        
+        <Stack.Screen 
+        name='CadastrarPergunta'
+        component={CadastrarPergunta}
+        options={{headerShown:true}} />
         
         
         </Stack.Navigator>
