@@ -14,11 +14,7 @@ export default function SignupAluno() {
   const navigation = useNavigation();
   const height = useHeaderHeight()
 
-  const [cpf, setCPF] = useState();
-  const [nome, setNome] = useState();
-  const [sobrenome, setSobrenome] = useState();
-  const [senha, setSenha] = useState();
-  const [repetirSenha, setRepetirSenha] = useState();
+  const [categoria, setCategoria] = useState();
   const [professorId, setProfessorId] = useState();
   
 
@@ -31,79 +27,26 @@ export default function SignupAluno() {
 
 
   const handleSubimit = async () => {
-
-     try {
-      if(cpfIsValid(cpf)){
-        if(senha === repetirSenha){
-         const user = {
-           cpf,
-           nome,
-           sobrenome,
-           tipoDeConta: "aluno",
-           senha, 
-           professorId
-          }
-          const response = await api.post("/signup", user).catch(error => console.log(error));
-          if(response.data.message === "Usuário já cadastrado!"){
-            Alert.alert(
-              'ERRO DE CADASTRO',
-              'Usuário já cadastrado.',
-              [
-                {
-                  text: 'Ok',
-                  onPress: () => console.log('Botão 1 Pressionado')
-                }
-             
-              ]
-            ); 
-      
-          }else{
-            console.log(response.data.user)
-             Alert.alert(
-              'Sucesso!',
-              'Aluno cadastrado com sucesso!.',
-              [
-                {
-                  text: 'Ok',
-                  onPress: () => navigation.navigate("MainProfessor")
-                }
-             
-              ]
-            )
-          }
-        }else{
-         Alert.alert(
-           'Senhas não combinam',
-           'Verifique a senha digitada.',
-           [
-             {
-               text: 'Ok',
-               onPress: () => console.log('Botão 1 Pressionado')
-             }
-          
-           ]
-         )
-         
-        }
-       }else{
-         Alert.alert(
-           'CPF inválido',
-           'CPF deve ter 11 digitos.',
-           [
-             {
-               text: 'Ok',
-               onPress: () => console.log('Botão 1 Pressionado')
-             }
-          
-           ]
-         ); 
-   
-       }
-     } catch (error) {
-      console.log(error)
+    const response = await api.post('/categoria', {
+      categoria,
+      professorId
+    });
+    if(response.data.message === "Categoria criada com sucesso."){
       Alert.alert(
-        'Verifique as informaões fornecidas',
-        'Dados incompletos.',
+        'Sucesso!',
+        'Categoria criada  com sucesso!.',
+        [
+          {
+            text: 'Ok',
+            onPress: () => navigation.navigate("MainProfessor")
+          }
+       
+        ]
+      )
+    }else{
+      Alert.alert(
+        'Erro ao cadastrar',
+        response.data.message,
         [
           {
             text: 'Ok',
@@ -111,24 +54,9 @@ export default function SignupAluno() {
           }
        
         ]
-      ); 
-      
-     }
+      )
 
-
-
-
-
-    function cpfIsValid(){
-      if(cpf.length != 11){
-        console.log('CPF deve ter 11 digitos')
-        return false
-      }
-      console.log("Deu certo")
-      return true
     }
-
-
 
   }
 
@@ -141,33 +69,16 @@ export default function SignupAluno() {
     enabled>
        
         <Animatable.View  animation="fadeInUp"  style={styles.containerForm}>
-            <Text style={styles.titleForm}>CPF</Text>
+            <Text style={styles.titleForm}>Nome da categoria</Text>
             <TextInput 
             keyboardType='decimal-pad'
-            onChangeText={setCPF}
+            onChangeText={setCategoria}
             style={styles.input} />
-            <Text style={styles.titleForm}>Nome</Text>
-            <TextInput 
-            onChangeText={setNome}
-            style={styles.input} />          
-            <Text style={styles.titleForm}>Sobrenome</Text>
-            <TextInput
-            onChangeText={setSobrenome}
-            style={styles.input} />            
-            <Text style={styles.titleForm}>Senha</Text>
-            <TextInput
-            secureTextEntry={true}
-            onChangeText={setSenha}
-            style={styles.input} />            
-            <Text style={styles.titleForm}>Repita a senha</Text>
-            <TextInput
-            secureTextEntry={true}
-            onChangeText={setRepetirSenha}
-            style={styles.input} />
+            
             <Animatable.View  animation="flipInY" delay={300}>
             <TouchableOpacity
             onPress={handleSubimit} 
-            style={styles.button}><Text style={styles.textButton}>Criar conta</Text></TouchableOpacity>
+            style={styles.button}><Text style={styles.textButton}>Cadastrar categoria</Text></TouchableOpacity>
             </Animatable.View>
                       
         </Animatable.View >
@@ -183,11 +94,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
       },
-         title : {
-        fontSize: 28,
-        color: '#fff',
-        fontWeight: 'bold'
-    },
+
     containerForm:{
         // /flex: 1,
         backgroundColor: '#fff',

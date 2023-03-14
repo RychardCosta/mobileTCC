@@ -2,17 +2,22 @@ import React, {useState,useEffect} from 'react';
 import { Alert, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements'
 import {useNavigation} from '@react-navigation/native'
-import api from "../../services/api.js"
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import { SelectList } from 'react-native-dropdown-select-list'
 
 import * as Animatable from 'react-native-animatable';
+
+import api from "../../services/api.js"
+
 
 
 export default function SignupAluno() {
   const navigation = useNavigation();
   const height = useHeaderHeight()
+  const [selected, setSelected] = useState("");
+  
+  
+
 
   const [cpf, setCPF] = useState();
   const [nome, setNome] = useState();
@@ -20,15 +25,30 @@ export default function SignupAluno() {
   const [senha, setSenha] = useState();
   const [repetirSenha, setRepetirSenha] = useState();
   const [professorId, setProfessorId] = useState();
+
+
+ 
+
   
+
 
   useEffect(() => {
     AsyncStorage.getItem('cpf').then(cpf => {
         setProfessorId(cpf)
          }, [])
-});
+         
+    
+    
+}), [];
 
 
+
+
+
+
+ const handleSearchCategorias = () => {
+  
+ }
 
   const handleSubimit = async () => {
 
@@ -117,8 +137,6 @@ export default function SignupAluno() {
 
 
 
-
-
     function cpfIsValid(){
       if(cpf.length != 11){
         console.log('CPF deve ter 11 digitos')
@@ -141,6 +159,13 @@ export default function SignupAluno() {
     enabled>
        
         <Animatable.View  animation="fadeInUp"  style={styles.containerForm}>
+         
+             <SelectList
+             placeholder='Categoria'
+              setSelected={setSelected} 
+             data={{key:1, value: "2"}} 
+            
+            />
             <Text style={styles.titleForm}>Pergunta</Text>
             <TextInput 
             onChangeText={setCPF}
@@ -172,6 +197,7 @@ export default function SignupAluno() {
             <TouchableOpacity
             onPress={handleSubimit} 
             style={styles.button}><Text style={styles.textButton}>Criar pergunta</Text></TouchableOpacity>
+      
             </Animatable.View>
                       
         </Animatable.View >
@@ -193,21 +219,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     containerForm:{
-       // flex: 1,
+       
         backgroundColor: '#fff',
         borderTopLeftRadius: 25 ,
         borderTopRightRadius: 25 ,
         paddingStart: '5%',
         paddingEnd: '5%',         
 
-        marginTop: "20%",
-        justifyContent: 'flex-end'
+        marginTop: "1%",
+      
     },
     input: {
         borderWidth: 1,
         borderRadius: 5,
-        height: 25,
-        marginBottom: 12,
+        height: 40,
+        marginBottom: 1,
         fontSize: 16
       },
       titleForm: {

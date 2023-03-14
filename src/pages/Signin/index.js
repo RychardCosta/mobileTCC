@@ -21,7 +21,7 @@ export default function SignIn() {
           senha
         }).catch(error => console.log(error));
         if(response.data.message === "Login feito com sucesso!"){
-          console.log(response.data.user)
+        
           await AsyncStorage.setItem('cpf', response.data.user.cpf);
           await AsyncStorage.setItem('nome', response.data.user.nome);
           await AsyncStorage.setItem('sobrenome', response.data.user.sobrenome);
@@ -31,7 +31,7 @@ export default function SignIn() {
             await AsyncStorage.setItem('professorId', response.data.user.professorId);
           }
           if(response.data.user.tipoDeConta === "professor"){
-            navigation.navigate("MainProfessor")
+                 navigation.navigate("MainProfessor")
           }else{
             navigation.navigate("MainAluno")
           }

@@ -10,29 +10,32 @@ import api from '../../services/api'
 
 export default function MainProfessor() {
   const [refreshing, setRefreshing] = React.useState(false);
+  const navigation = useNavigation();
   const [nome, setNome] = useState();
   const [cpf, setCpf] = useState();
   const [quantidadeDeAlunos, setQuantidadeDeAlunos] =useState();
   const [quantidadeDeCategorias, setQuantidadeDeCategorias] =useState();
   const [quantidadeDePerguntas, setQuantidadeDePerguntas] =useState();
-  const navigation = useNavigation();
+  const [hasCategoria, setHasCategoria] =useState(false);
+  
+  
 
  
-
-  useEffect( () => {
-    AsyncStorage.getItem('nome').then(nome => {
-      setNome(nome)
-         }, [])
-    AsyncStorage.getItem('cpf').then(cpf => {
-      setCpf(cpf)
-         }, [])
-         Alunos()
-         Categorias()
-         Perguntas()
-
  
-        });
-
+    useEffect( () => {
+      AsyncStorage.getItem('nome').then(nome => {
+        setNome(nome)
+           }, [])
+      AsyncStorage.getItem('cpf').then(cpf => {
+        setCpf(cpf)
+           }, [])
+           Alunos()
+           Categorias()
+           Perguntas()
+  
+   
+          });
+    
         const onRefresh = useCallback(() => {
           setRefreshing(true);
           setTimeout(() => {
@@ -55,9 +58,11 @@ export default function MainProfessor() {
        
         async function Categorias(){
          try {
-          const response = await api.get(`/categoria?professorId=${cpf}`).catch(error => console.log(error));
+          const response = await api.get(`/categoria/${cpf}`).catch(error => console.log(error));
           const array = response.data.categoria;  
           setQuantidadeDeCategorias(array.length);
+          console.log(array)
+     
 
          } catch (error) {
           console.log(error)
