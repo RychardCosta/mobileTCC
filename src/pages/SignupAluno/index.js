@@ -1,9 +1,12 @@
 import React, {useState,useEffect} from 'react';
-import { Alert, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+import { Alert, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements'
 import {useNavigation} from '@react-navigation/native'
-import api from "../../services/api.js"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useForm, Controller } from "react-hook-form";
+
+import api from "../../services/api.js"
+
 
 
 
@@ -11,14 +14,9 @@ import * as Animatable from 'react-native-animatable';
 
 
 export default function SignupAluno() {
+  const {control, handleSubmit, formState:{errors}} = useForm({})
   const navigation = useNavigation();
   const height = useHeaderHeight()
-
-  const [cpf, setCPF] = useState();
-  const [nome, setNome] = useState();
-  const [sobrenome, setSobrenome] = useState();
-  const [senha, setSenha] = useState();
-  const [repetirSenha, setRepetirSenha] = useState();
   const [professorId, setProfessorId] = useState();
   
 
@@ -30,17 +28,18 @@ export default function SignupAluno() {
 
 
 
-  const handleSubimit = async () => {
+  const handleSubmitCriarConta = async (data) => {
+    console.log(data)
 
      try {
-      if(cpfIsValid(cpf)){
-        if(senha === repetirSenha){
+      if(cpfIsValid(data.cpf)){
+        if(data.senha === data.repetirSenha){
          const user = {
-           cpf,
-           nome,
-           sobrenome,
+           "cpf": data.cpf,
+           "nome": data.nome,
+           "sobrenome": data.sobrenome,
            tipoDeConta: "aluno",
-           senha, 
+           "senha": data.senha, 
            professorId
           }
           const response = await api.post("/signup", user).catch(error => console.log(error));
@@ -119,7 +118,7 @@ export default function SignupAluno() {
 
 
 
-    function cpfIsValid(){
+    function cpfIsValid(cpf){
       if(cpf.length != 11){
         console.log('CPF deve ter 11 digitos')
         return false
@@ -139,41 +138,86 @@ export default function SignupAluno() {
     behavior={Platform.OS == "ios" ? "padding" : "height"}
     style={styles.container}
     enabled>
+      <ScrollView>
        
         <Animatable.View  animation="fadeInUp"  style={styles.containerForm}>
             <Text style={styles.titleForm}>CPF</Text>
-            <TextInput 
+            <Controller
+        control={control}
+        name="cpf"
+        render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
             keyboardType='decimal-pad'
-            onChangeText={setCPF}
-            style={styles.input} />
-            <Text style={styles.titleForm}>Nome</Text>
-            <TextInput 
-            onChangeText={setNome}
-            style={styles.input} />          
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} /> 
+        )}
+        />
+        <Text style={styles.titleForm}>Nome</Text>
+            <Controller
+        control={control}
+        name="nome"
+        render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            keyboardType='decimal-pad'
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} /> 
+        )}
+        /> 
+    
             <Text style={styles.titleForm}>Sobrenome</Text>
-            <TextInput
-            onChangeText={setSobrenome}
-            style={styles.input} />            
+          <Controller
+            control={control}
+            name="sobrenome"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            keyboardType='decimal-pad'
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} /> 
+        )}
+        />          
             <Text style={styles.titleForm}>Senha</Text>
-            <TextInput
-            secureTextEntry={true}
-            onChangeText={setSenha}
-            style={styles.input} />            
+            <Controller
+            control={control}
+            name="senha"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+          secureTextEntry={true}
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} /> 
+        )}
+        />
+                  
             <Text style={styles.titleForm}>Repita a senha</Text>
-            <TextInput
-            secureTextEntry={true}
-            onChangeText={setRepetirSenha}
-            style={styles.input} />
+            <Controller
+            control={control}
+                name="repetirSenha"
+                render={({field:  {onChange, value, onBlur}}) => (
+              <TextInput 
+              secureTextEntry={true}
+                style={styles.input}
+                onChangeText={onChange}
+                value={value}
+                onBlur={onBlur} /> 
+        )}
+        />
             <Animatable.View  animation="flipInY" delay={300}>
             <TouchableOpacity
-            onPress={handleSubimit} 
+            onPress={handleSubmit(handleSubmitCriarConta)} 
             style={styles.button}><Text style={styles.textButton}>Criar conta</Text></TouchableOpacity>
             </Animatable.View>
                       
         </Animatable.View >
            
 
-      
+        </ScrollView>
      </KeyboardAvoidingView>
   );
 }
@@ -195,7 +239,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25 ,
         paddingStart: '5%',
         paddingEnd: '5%', 
-        marginTop: "20%",
+        marginTop: "10%",
         justifyContent: 'flex-end'
     },
     input: {

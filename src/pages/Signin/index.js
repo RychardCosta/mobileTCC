@@ -1,5 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { View, Text , TouchableOpacity, TextInput, StyleSheet,Alert } from 'react-native';
+import { useForm, Controller } from "react-hook-form";
+
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native'
@@ -10,17 +12,16 @@ import api from "../../services/api.js"
 
 
 export default function SignIn() {
+  const {control, handleSubmit, formState:{errors}} = useForm({})
   const navigation = useNavigation();
-    const [cpf, setCpf] = useState(null);
-    const [senha, setSenha] = useState(null);
-
-
-      const handleSubmitAcessar =  async ()=>{
+      const handleSubmitAcessar =  async (data)=>{
+        console.log(data)
          const response = await api.post("/login",{
-          cpf,
-          senha
+          "cpf": data.cpf,
+          "senha": data.senha
         }).catch(error => console.log(error));
         if(response.data.message === "Login feito com sucesso!"){
+          console.log(response.data.user)
         
           await AsyncStorage.setItem('cpf', response.data.user.cpf);
           await AsyncStorage.setItem('nome', response.data.user.nome);
@@ -60,18 +61,35 @@ export default function SignIn() {
       </Animatable.View>
       <Animatable.View animation='fadeInRight' style={styles.containerForm}>
       <Text style={styles.title}>CPF </Text>
+      <Controller
+      control={control}
+      name="cpf"
+      render={({field:  {onChange, value, onBlur}}) => (
         <TextInput 
           keyboardType='decimal-pad'
           style={styles.input}
-          onChangeText={setCpf} />  
-      <Text style={styles.title}>Senha </Text>
+          onChangeText={onChange}
+          value={value}
+          onBlur={onBlur} /> 
+      )}
+      />
+            <Controller
+      control={control}
+      name="senha"
+      render={({field:  {onChange, value, onBlur}}) => (
         <TextInput 
-        secureTextEntry={true} 
-        style={styles.input}
-        onChangeText={setSenha}/>  
+         secureTextEntry={true} 
+          style={styles.input}
+          onChangeText={onChange}
+          value={value}
+          onBlur={onBlur} /> 
+      )}
+      />
 
+
+         
         <TouchableOpacity 
-        onPress={handleSubmitAcessar}
+        onPress={handleSubmit(handleSubmitAcessar)}
         style={styles.button}> 
           <Text style={styles.textButton}>Acessar</Text>
         </TouchableOpacity>

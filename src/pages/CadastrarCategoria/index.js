@@ -4,17 +4,19 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import {useNavigation} from '@react-navigation/native'
 import api from "../../services/api.js"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useForm, Controller } from "react-hook-form";
+
 
 
 
 import * as Animatable from 'react-native-animatable';
 
 
-export default function SignupAluno() {
+export default function CadastrarCategora() {
+  const {control, handleSubmit, formState:{errors}} = useForm({})
   const navigation = useNavigation();
   const height = useHeaderHeight()
 
-  const [categoria, setCategoria] = useState();
   const [professorId, setProfessorId] = useState();
   
 
@@ -26,9 +28,9 @@ export default function SignupAluno() {
 
 
 
-  const handleSubimit = async () => {
+  const handleSubmitCriarCategoria = async (data) => {
     const response = await api.post('/categoria', {
-      categoria,
+      categoria: data.categoria.toUpperCase(),
       professorId
     });
     if(response.data.message === "Categoria criada com sucesso."){
@@ -70,14 +72,22 @@ export default function SignupAluno() {
        
         <Animatable.View  animation="fadeInUp"  style={styles.containerForm}>
             <Text style={styles.titleForm}>Nome da categoria</Text>
-            <TextInput 
-            keyboardType='decimal-pad'
-            onChangeText={setCategoria}
-            style={styles.input} />
+            <Controller
+            control={control}
+            name="categoria"
+            render={({field:  {onChange, value, onBlur}}) => (
+        <TextInput 
+          keyboardType='decimal-pad'
+          style={styles.input}
+          onChangeText={onChange}
+          value={value}
+          onBlur={onBlur} /> 
+      )}
+      />
             
             <Animatable.View  animation="flipInY" delay={300}>
             <TouchableOpacity
-            onPress={handleSubimit} 
+            onPress={handleSubmit(handleSubmitCriarCategoria)} 
             style={styles.button}><Text style={styles.textButton}>Cadastrar categoria</Text></TouchableOpacity>
             </Animatable.View>
                       

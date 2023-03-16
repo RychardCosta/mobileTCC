@@ -61,8 +61,6 @@ export default function MainProfessor() {
           const response = await api.get(`/categoria/${cpf}`).catch(error => console.log(error));
           const array = response.data.categoria;  
           setQuantidadeDeCategorias(array.length);
-          console.log(array)
-     
 
          } catch (error) {
           console.log(error)
@@ -81,6 +79,11 @@ export default function MainProfessor() {
           console.log(error)
           setQuantidadeDePerguntas(0)
          } 
+        }
+        const handleSubmitCadastrarPerguntas = async () => {
+       
+          navigation.navigate("CadastrarPergunta")
+
         }
        
         const handleSubmitSair = async () =>{
@@ -129,7 +132,7 @@ export default function MainProfessor() {
         <TouchableOpacity style={styles.input} onPress={() => navigation.navigate("CadastrarCategoria")}>
           <Text style={styles.textInput}>Cadastrar categoria</Text>
           </TouchableOpacity>
-        <TouchableOpacity style={styles.input} onPress={() => navigation.navigate("CadastrarPergunta")}>
+        <TouchableOpacity style={styles.input} onPress={handleSubmitCadastrarPerguntas}>
           <Text style={styles.textInput}>Cadastrar pergunta</Text>
           </TouchableOpacity>
         <TouchableOpacity style={styles.input}>

@@ -1,9 +1,9 @@
 import React, {useState,useEffect} from 'react';
-import { Alert, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+import { Alert, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements'
 import {useNavigation} from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SelectList } from 'react-native-dropdown-select-list'
+import { useForm, Controller } from "react-hook-form";
 
 import * as Animatable from 'react-native-animatable';
 
@@ -11,145 +11,65 @@ import api from "../../services/api.js"
 
 
 
-export default function SignupAluno() {
+export default function CadastrarPergunta() {
+  const {control, handleSubmit, formState:{errors}} = useForm({})
   const navigation = useNavigation();
   const height = useHeaderHeight()
-  const [selected, setSelected] = useState("");
-  
-  
-
-
-  const [cpf, setCPF] = useState();
-  const [nome, setNome] = useState();
-  const [sobrenome, setSobrenome] = useState();
-  const [senha, setSenha] = useState();
-  const [repetirSenha, setRepetirSenha] = useState();
-  const [professorId, setProfessorId] = useState();
-
 
  
 
-  
-
-
-  useEffect(() => {
-    AsyncStorage.getItem('cpf').then(cpf => {
-        setProfessorId(cpf)
-         }, [])
-         
-    
-    
-}), [];
-
-
-
-
-
-
- const handleSearchCategorias = () => {
-  
- }
-
-  const handleSubimit = async () => {
-
-     try {
-      if(cpfIsValid(cpf)){
-        if(senha === repetirSenha){
-         const user = {
-           cpf,
-           nome,
-           sobrenome,
-           tipoDeConta: "aluno",
-           senha, 
-           professorId
-          }
-          const response = await api.post("/signup", user).catch(error => console.log(error));
-          if(response.data.message === "Usuário já cadastrado!"){
-            Alert.alert(
-              'ERRO DE CADASTRO',
-              'Usuário já cadastrado.',
-              [
-                {
-                  text: 'Ok',
-                  onPress: () => console.log('Botão 1 Pressionado')
-                }
-             
-              ]
-            ); 
-      
-          }else{
-            console.log(response.data.user)
-             Alert.alert(
-              'Sucesso!',
-              'Aluno cadastrado com sucesso!.',
-              [
-                {
-                  text: 'Ok',
-                  onPress: () => navigation.navigate("MainProfessor")
-                }
-             
-              ]
-            )
-          }
-        }else{
-         Alert.alert(
-           'Senhas não combinam',
-           'Verifique a senha digitada.',
-           [
-             {
-               text: 'Ok',
-               onPress: () => console.log('Botão 1 Pressionado')
-             }
-          
-           ]
-         )
-         
-        }
-       }else{
-         Alert.alert(
-           'CPF inválido',
-           'CPF deve ter 11 digitos.',
-           [
-             {
-               text: 'Ok',
-               onPress: () => console.log('Botão 1 Pressionado')
-             }
-          
-           ]
-         ); 
+const handleSubmitCriarPergunta = async (data) => {
+  console.log(data)
+   try {
    
-       }
-     } catch (error) {
-      console.log(error)
-      Alert.alert(
-        'Verifique as informaões fornecidas',
-        'Dados incompletos.',
-        [
-          {
-            text: 'Ok',
-            onPress: () => console.log('Botão 1 Pressionado')
-          }
-       
-        ]
-      ); 
-      
-     }
+    const cpf = await AsyncStorage.getItem('cpf');
 
+    const response = await api.post('pergunta',{
+     
+        "pergunta": data.pergunta,
+      "resposta": data.resposta,
+       "categoriaName": data.categoria  ? data.categoria: "GERAL" ,
+       "professorId": cpf,
+        "opcao1": data.opcao1, 
+        "opcao2": data.opcao2, 
+        "opcao3": data.opcao3,
+        "opcao4": data.opcao4
+   
 
+    });
+    Alert.alert(
+      'Sucesso!',
+      response.data.message,
+      [
+        {
+          text: 'Ok',
+          onPress: () => navigation.navigate("MainProfessor")
+        }
+     
+      ]
+    );
 
-    function cpfIsValid(){
-      if(cpf.length != 11){
-        console.log('CPF deve ter 11 digitos')
-        return false
-      }
-      console.log("Deu certo")
-      return true
-    }
+    
 
+    console.log(response.data)
+  
 
-
+  } catch (error) {
+    console.log(error)
+    Alert.alert(
+      'Erro ao cadastrar imagem',
+      response.data.message,
+      [
+        {
+          text: 'Ok',
+          onPress: () => console.log('Botão 1 Pressionado')
+        }
+     
+      ]
+    ); 
+    
   }
-
+}
 
   return (
     <KeyboardAvoidingView
@@ -157,45 +77,109 @@ export default function SignupAluno() {
     behavior={Platform.OS == "ios" ? "padding" : "height"}
     style={styles.container}
     enabled>
-       
+      <ScrollView>
+
         <Animatable.View  animation="fadeInUp"  style={styles.containerForm}>
          
-             <SelectList
-             placeholder='Categoria'
-              setSelected={setSelected} 
-             data={{key:1, value: "2"}} 
-            
-            />
-            <Text style={styles.titleForm}>Pergunta</Text>
-            <TextInput 
-            onChangeText={setCPF}
-            style={styles.input} />
+           <Text style={styles.titleForm}>Categoria</Text>
+           <Controller
+            control={control}
+            name="categoria"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} 
+            placeholder="PADRÃO GERAL"/> 
+              )}
+              />
+       
+           <Text style={styles.titleForm}>Pergunta</Text>
+           <Controller
+            control={control}
+            name="pergunta"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} 
+            /> 
+              )}
+              />
             <Text style={styles.titleForm}>Resposta</Text>
-            <TextInput 
-            onChangeText={setNome}
-            style={styles.input} />          
+            <Controller
+            control={control}
+            name="resposta"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            keyboardType='decimal-pad'
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} 
+            /> 
+              )}
+              />        
             <Text style={styles.titleForm}>Opção 1</Text>
-            <TextInput
-            onChangeText={setSobrenome}
-            style={styles.input} />            
+            <Controller
+            control={control}
+            name="opcao1"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            keyboardType='decimal-pad'
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} 
+            /> 
+              )}
+              />         
             <Text style={styles.titleForm}>Opção 2</Text>
-            <TextInput
-            secureTextEntry={true}
-            onChangeText={setSenha}
-            style={styles.input} />            
+            <Controller
+            control={control}
+            name="opcao2"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} 
+            /> 
+              )}
+              />           
             <Text style={styles.titleForm}>Opção 3</Text>
-            <TextInput
-            secureTextEntry={true}
-            onChangeText={setRepetirSenha}
-            style={styles.input} />
+            <Controller
+            control={control}
+            name="opcao3"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} 
+            /> 
+              )}
+              /> 
             <Text style={styles.titleForm}>Opção 4</Text>
-            <TextInput
-            secureTextEntry={true}
-            onChangeText={setRepetirSenha}
-            style={styles.input} />
+            <Controller
+            control={control}
+            name="opcao4"
+            render={({field:  {onChange, value, onBlur}}) => (
+          <TextInput 
+            
+            style={styles.input}
+            onChangeText={onChange}
+            value={value}
+            onBlur={onBlur} 
+            /> 
+              )}
+              /> 
             <Animatable.View  animation="flipInY" delay={300}>
             <TouchableOpacity
-            onPress={handleSubimit} 
+            onPress={handleSubmit(handleSubmitCriarPergunta)}
+            
             style={styles.button}><Text style={styles.textButton}>Criar pergunta</Text></TouchableOpacity>
       
             </Animatable.View>
@@ -203,7 +187,7 @@ export default function SignupAluno() {
         </Animatable.View >
            
 
-      
+        </ScrollView>
      </KeyboardAvoidingView>
   );
 }
@@ -225,8 +209,9 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25 ,
         paddingStart: '5%',
         paddingEnd: '5%',         
+        justifyContent: 'flex-end'
 
-        marginTop: "1%",
+        
       
     },
     input: {
@@ -234,7 +219,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         height: 40,
         marginBottom: 1,
-        fontSize: 16
+        fontSize: 16,
+        
       },
       titleForm: {
         marginTop: '2%', 
