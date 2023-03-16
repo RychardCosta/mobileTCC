@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React from 'react';
 import { Alert, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements'
 import {useNavigation} from '@react-navigation/native'

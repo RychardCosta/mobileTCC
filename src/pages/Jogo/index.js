@@ -1,45 +1,68 @@
-import React, {useState, useLayoutEffect} from 'react';
-import { View, Text , ScrollView, TouchableOpacity, StyleSheet, RefreshControl} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text , ScrollView, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native'
 
 import api from '../../services/api'
 
+
 export default function Jogo() {
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const navigation = useNavigation();
   const [pergunta, setPergunta] = useState("");
-  const [opcao1, SetOpcao1] = useState("Opcao 1");
-  const [opcao2, SetOpcao2] = useState("Opcao 2");
-  const [opcao3, SetOpcao3] = useState("Opcao 3");
-  const [opcao4, SetOpcao4] = useState("Opcao 4");
-  const [opcao5, SetOpcao5] = useState("Opcao 5");
-  const [resposta, setResposta] = useState("Opcao 5");
-  const [cpf, setCpf] = useState("Opcao 5");
+  const [opcao, setOpcao] = useState([]);
+  const [perguntaId, setPerguntaId] = useState("");
+  const [message, setMessage] = useState("");
+   const [resposta, setResposta] = useState("");
+   const [pontos, setPontos] = useState(0);
+   const [pontosObtidos, setPontosObtidos] = useState(0);
+  const [cpf, setCpf] = useState("");
+  const [professorId, setProfessorId] = useState("");
   const [arrayPerguntas, setArrayPerguntas] = useState([]);
-  const [load, setLoad]= useState()
-  const [index, setIndex]= useState(0)
+  const [load, setLoad]= useState();
+  const [index, setIndex]= useState(0);
+  const indexView = [0,1,2,3, 4];
+
+  shuffleArray(indexView)
   
 
 
 
 
-  useLayoutEffect(()=>{
+  useEffect(()=>{
       AsyncStorage.getItem('cpf').then(cpf => {
         setCpf(cpf)
+           }, [])
+      AsyncStorage.getItem('professorId').then(professoId => {
+        setProfessorId(professoId)
            }, [])
            GerarPergunta()
    
 
     async function GerarPergunta(){
+      let response = []
 
-      const response =  await api.get(`/pergunta/gerar/${cpf}`)
+      
+     professorId ?  response =  await api.get(`/pergunta/gerar/${professorId}`) :  response =  await api.get(`/pergunta/gerar/${cpf}`)
+    
 
 
-      for(let i = 0;i <2; i++ ){
-        setArrayPerguntas(response.data.perguntas)
+      for(let i = 0;i <1; i++ ){
+        setArrayPerguntas((oldArray) => [response.data.perguntas])
         try{
+          setPerguntaId(response.data.perguntas[0].id)
+          setPontos(response.data.perguntas[0].valorDaPontuacao)
+          setMessage(response.data.message)
           setPergunta(response.data.perguntas[0].pergunta)
-          console.log(response.data.perguntas)
+          setResposta(response.data.perguntas[0].resposta)
+          setOpcao(oldArray => [response.data.perguntas[0].resposta])
+          setOpcao(oldArray => [...oldArray, response.data.perguntas[0].opcao1])
+          setOpcao(oldArray => [...oldArray, response.data.perguntas[0].opcao2])
+          setOpcao(oldArray => [...oldArray, response.data.perguntas[0].opcao3])
+          setOpcao(oldArray => [...oldArray, response.data.perguntas[0].opcao4])
+
+          
+          
        
         }catch(erro){
           console.log(erro)
@@ -53,34 +76,82 @@ export default function Jogo() {
 
 
       }
-
     
     }
       }, [load, index])
+     
+
+
+
+
+
+  const verificarResposta = async  (opcaEscolhida) => {
+    console.log("Pergunta Id")
+    console.log(perguntaId)
+
+    await api.post(`/responderPergunta/${perguntaId}`, {
+      respostaEscolhida: opcaEscolhida,
+      alunoId: cpf
+    })
       
-
-      const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        setTimeout(() => {
-          setRefreshing(false);
-        }, 1000);
-      }, []);
-
-
-
-
-  const verificarResposta = (opcaEscolhida) => {
+  
     if(opcaEscolhida === resposta){
+      setPontosObtidos(pontosObtidos + pontos )
       console.log(`Resposta certa: ${opcaEscolhida}`)
+      Alert.alert(
+        'Resposta certa',
+        `Resposta certa: ${opcaEscolhida}`,
+        [
+          {
+            text: "Cancelar",
+            onPress: () => professorId ? navigation.navigate("MainAluno"): navigation.navigate("MainProfessor")
+          },       
+          {
+            text: 'Continuar',
+            onPress: () => {
+              if(arrayPerguntas.length  == 0 ){
+                console.log("Sem mais")
+              } else{
+              setIndex(index + 1)
+
+            }              
+            }
+          }
+
+        ]
+      ); 
+    
     }else{
+      Alert.alert(
+        'Resposta errada',
+        `Resposta errada. Pontos obtidos: ${pontosObtidos}`,
+        [
+          {
+            text: "Menu iniciar",
+            onPress: () => professorId ? navigation.navigate("MainAluno"): navigation.navigate("MainProfessor")
+          }
+        ]
+      ); 
       console.log(`Resposta errada: Opção certa ${resposta}`)
+     
       
     }
-    if(arrayPerguntas.length  == 0 ){
-      console.log("Sem mais")
-    } else{
-    setIndex(index + 1)
-  }
+  
+
+
+
+}
+
+function shuffleArray(arr) {
+  // Loop em todos os elementos
+for (let i = arr.length - 1; i > 0; i--) {
+      // Escolhendo elemento aleatório
+  const j = Math.floor(Math.random() * (i + 1));
+  // Reposicionando elemento
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+}
+// Retornando array com aleatoriedade
+return arr;
 }
 
 
@@ -90,29 +161,29 @@ export default function Jogo() {
 
   return (
     <ScrollView style={styles.container} 
-    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-    >
+      >
       <View style={styles.perguntaForm}> 
-      <Text> Pergunta: {pergunta} </Text>
+      <Text style={{fontSize: 15, color: "#rgb(200,0,0)"}}> {message} </Text>
+      <Text style={styles.textPergunta}> {pergunta} </Text>
 
       </View>
       <View style={styles.buttonsContainer}>
-      <TouchableOpacity style={styles.buttom} onPress={() => verificarResposta(opcao1)} >
-        <Text>{opcao1}</Text>
+      <TouchableOpacity style={styles.buttom} onPress={() => verificarResposta(opcao[indexView[0]])} >
+        <Text style={styles.textButton}>{opcao[indexView[0]]}</Text>
         </TouchableOpacity>
-      <TouchableOpacity style={styles.buttom} onPress={() => verificarResposta(opcao2)}>
-        <Text>{opcao2}</Text>
+      <TouchableOpacity style={styles.buttom} onPress={() => verificarResposta(opcao[indexView[1]])}>
+        <Text style={styles.textButton}>{opcao[indexView[1]]}</Text>
       </TouchableOpacity>
    
-      <TouchableOpacity style={styles.buttom} onPress={()=> verificarResposta(opcao3)}>
-        <Text>{opcao3}</Text>
+      <TouchableOpacity style={styles.buttom} onPress={()=> verificarResposta(opcao[indexView[2]])}>
+        <Text style={styles.textButton}>{opcao[indexView[2]]}</Text>
       </TouchableOpacity>
-          <TouchableOpacity style={styles.buttom} onPress={() =>verificarResposta(opcao4)}>
-        <Text>{opcao4}</Text>
+          <TouchableOpacity style={styles.buttom} onPress={() =>verificarResposta(opcao[indexView[3]])}>
+        <Text style={styles.textButton}>{opcao[indexView[3]]}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttom} onPress={() => verificarResposta(opcao5)}>
+      <TouchableOpacity style={styles.buttom} onPress={() => verificarResposta(opcao[indexView[4]])}>
 
-        <Text>{opcao5}</Text>
+        <Text style={styles.textButton}>{opcao[indexView[4]]}</Text>
       </TouchableOpacity>
       </View>
      </ScrollView>
@@ -122,20 +193,32 @@ export default function Jogo() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#0a0310"
 
   },
   buttom: {
+    backgroundColor:"#ffff",
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 15,
     height: 60,
-    marginBottom: 12,
     fontSize: 16,
-    paddingStart: "25%",
+    paddingStart: "5%",
+    width: "100%",
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 14,
+    paddingVertical: 8,
+    borderRadius: 4, 
+    marginBottom : 15
   },
   perguntaForm: {
-    height: "30%",
-    marginTop: 10,
-  //  backgroundColor: "#404040"
+    height: "20%",
+    marginTop: 20,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "#404040",
+    borderRadius: 5,
+   
   },
   buttonsContainer:{
    // backgroundColor: "rgb(0,0,255)",
@@ -145,6 +228,18 @@ const styles = StyleSheet.create({
     paddingStart: "5%",
     paddingEnd: "5%"
     
-
+  },
+  textPergunta:{
+    fontSize: 30,
+    color: "#fff",
+    fontWeight: 'bold'
+  },
+  textButton:{
+    fontSize: 15,
+    color: "#000",
+    fontWeight: 'bold'
+   
+    
+    
   }
 });

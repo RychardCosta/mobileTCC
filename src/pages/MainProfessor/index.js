@@ -115,7 +115,7 @@ export default function MainProfessor() {
      refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
     }>
-      <View>
+      <View style={styles.header}>
         <Text style={styles.textHeader}> Bem vindo {nome} </Text>
         <Text style={styles.textHeader2}> Quantidade de alunos: {quantidadeDeAlunos}</Text>
         <Text style={styles.textHeader2}> Quantidade de categorias: {quantidadeDeCategorias}</Text>
@@ -151,33 +151,36 @@ export default function MainProfessor() {
 const styles = StyleSheet.create({
   container:{
     flex: 1 ,
-    backgroundColor: '#fff',
+    backgroundColor: '#c0c2bd',
   },
   input: {
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 10,
     height: 40,
     marginBottom: 12,
     fontSize: 16,
-    paddingStart: "25%",
+    paddingStart: "25%", 
+    backgroundColor: "#404040", 
+    
     
   }, 
   textInput: {
-      color:"#000",
       marginTop: '2%', 
       marginBottom: '1%',
       fontSize: 20,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      color: "#fff"
   },
   containerForm: {
     flex: 1,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 25 ,
-    borderTopRightRadius: 25 ,
+    borderRadius: 10 ,
+    
     paddingStart: '5%',
     paddingEnd: '5%',
     marginTop: "20%",
-    marginBottom: "10%"
+    marginBottom: "10%",
+    borderWidth: 1
   },
   text:{
     color: "#000",
@@ -199,6 +202,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 10
   },
+  header:{
+    borderWidth: 1,
+    backgroundColor: "#fff",
+    borderRadius: 25 ,
+
+  }
 })
 
 
