@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "http://rychard.myvnc.com"
+    baseURL: "http://10.0.0.10:3000"
 });
 
 

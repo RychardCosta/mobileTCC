@@ -9,6 +9,7 @@ import SignupAluno from '../pages/SignupAluno'
 import Jogo from '../pages/Jogo'
 import CadastrarCategoria from '../pages/CadastrarCategoria'
 import CadastrarPergunta from '../pages/CadastrarPergunta'
+import Ranking from '../pages/Ranking'
 
 
 const Stack = createStackNavigator();
@@ -59,6 +60,10 @@ export default function Routes(){
         <Stack.Screen 
         name='CadastrarPergunta'
         component={CadastrarPergunta}
+        options={{headerShown:true}} />
+        <Stack.Screen 
+        name='Ranking'
+        component={Ranking}
         options={{headerShown:true}} />
         
         

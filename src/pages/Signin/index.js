@@ -1,131 +1,148 @@
 import React from 'react';
-import { View, Text , TouchableOpacity, TextInput, StyleSheet,Alert } from 'react-native';
-import { useForm, Controller } from "react-hook-form";
-
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import {useForm, Controller} from 'react-hook-form';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation} from '@react-navigation/native';
 
 import * as Animatable from 'react-native-animatable';
 
-import api from "../../services/api.js"
-
+import api from '../../services/api.js';
 
 export default function SignIn() {
-  const {control, handleSubmit, formState:{errors}} = useForm({})
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({});
   const navigation = useNavigation();
-      const handleSubmitAcessar =  async (data)=>{
-        console.log(data)
-         const response = await api.post("/login",{
-          "cpf": data.cpf,
-          "senha": data.senha
-        }).catch(error => console.log(error));
-        if(response.data.message === "Login feito com sucesso!"){
-          console.log(response.data.user)
-        
-          await AsyncStorage.setItem('cpf', response.data.user.cpf);
-          await AsyncStorage.setItem('nome', response.data.user.nome);
-          await AsyncStorage.setItem('sobrenome', response.data.user.sobrenome);
-          await AsyncStorage.setItem('pontuacao', String.toString(response.data.user.pontuacao));
-          await AsyncStorage.setItem('tipoDeConta', response.data.user.tipoDeConta);
-          if(response.data.user.professorId){
-            await AsyncStorage.setItem('professorId', response.data.user.professorId);
-          }
-          if(response.data.user.tipoDeConta === "professor"){
-                 navigation.navigate("MainProfessor")
-          }else{
-            navigation.navigate("MainAluno")
-          }
-        }else{
-          console.log(response.data.message)
-          Alert.alert(
-            'Login inválido',
-            'Nome de usuário ou senha incorretos.',
-            [
-              {
-                text: 'Ok',
-                onPress: () => console.log('Botão 1 Pressionado')
-              }
-           
-            ]
-          ); 
-        }
+  const handleSubmitAcessar = async data => {
+    console.log(data);
+    const response = await api
+      .post('/login', {
+        cpf: data.cpf,
+        senha: data.senha,
+      })
+      .catch(error => console.log(error));
+    if (response.data.message === 'Login feito com sucesso!') {
+      console.log(response.data.user);
+      try {
+        await AsyncStorage.removeItem('cpf');
+        await AsyncStorage.removeItem('nome');
+        await AsyncStorage.removeItem('sobrenome');
+        await AsyncStorage.removeItem('pontuacao');
+        await AsyncStorage.removeItem('tipoDeConta');
+        await AsyncStorage.removeItem('professorId');
+      } catch (error) {
+        console.log(error);
+      }
 
-        
-         
-  }
-    return (
+      await AsyncStorage.setItem('cpf', response.data.user.cpf);
+      await AsyncStorage.setItem('nome', response.data.user.nome);
+      await AsyncStorage.setItem('sobrenome', response.data.user.sobrenome);
+      await AsyncStorage.setItem(
+        'pontuacao',
+        String.toString(response.data.user.pontuacao),
+      );
+      await AsyncStorage.setItem('tipoDeConta', response.data.user.tipoDeConta);
+      if (response.data.user.professorId) {
+        await AsyncStorage.setItem(
+          'professorId',
+          response.data.user.professorId,
+        );
+      }
+      if (response.data.user.tipoDeConta === 'professor') {
+        navigation.navigate('MainProfessor');
+      } else {
+        navigation.navigate('MainAluno');
+      }
+    } else {
+      console.log(response.data.message);
+      Alert.alert('Login inválido', 'Nome de usuário ou senha incorretos.', [
+        {
+          text: 'Ok',
+          onPress: () => console.log('Botão 1 Pressionado'),
+        },
+      ]);
+    }
+  };
+  return (
     <View style={styles.container}>
       <Animatable.View animation="fadeInLeft" style={styles.containerHeader}>
-      <Text style={styles.message}> BEM-VINDO(a) </Text>  
+        <Text style={styles.message}> BEM-VINDO(a) </Text>
       </Animatable.View>
-      <Animatable.View animation='fadeInRight' style={styles.containerForm}>
-      <Text style={styles.title}>CPF </Text>
-      <Controller
-      control={control}
-      name="cpf"
-      render={({field:  {onChange, value, onBlur}}) => (
-        <TextInput 
-          keyboardType='decimal-pad'
-          style={styles.input}
-          onChangeText={onChange}
-          value={value}
-          onBlur={onBlur} /> 
-      )}
-      />
-            <Controller
-      control={control}
-      name="senha"
-      render={({field:  {onChange, value, onBlur}}) => (
-        <TextInput 
-         secureTextEntry={true} 
-          style={styles.input}
-          onChangeText={onChange}
-          value={value}
-          onBlur={onBlur} /> 
-      )}
-      />
+      <Animatable.View animation="fadeInRight" style={styles.containerForm}>
+        <Text style={styles.title}>CPF </Text>
+        <Controller
+          control={control}
+          name="cpf"
+          render={({field: {onChange, value, onBlur}}) => (
+            <TextInput
+              keyboardType="decimal-pad"
+              style={styles.input}
+              onChangeText={onChange}
+              value={value}
+              onBlur={onBlur}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="senha"
+          render={({field: {onChange, value, onBlur}}) => (
+            <TextInput
+              secureTextEntry={true}
+              style={styles.input}
+              onChangeText={onChange}
+              value={value}
+              onBlur={onBlur}
+            />
+          )}
+        />
 
-
-         
-        <TouchableOpacity 
-        onPress={handleSubmit(handleSubmitAcessar)}
-        style={styles.button}> 
+        <TouchableOpacity
+          onPress={handleSubmit(handleSubmitAcessar)}
+          style={styles.button}>
           <Text style={styles.textButton}>Acessar</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-         onPress={ () => navigation.navigate("Signup")}
-        style={styles.register}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Signup')}
+          style={styles.register}>
           <Text>Criar uma conta</Text>
         </TouchableOpacity>
-      </Animatable.View> 
-     </View>
+      </Animatable.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#404040'
+    backgroundColor: '#404040',
   },
   containerHeader: {
     marginTop: '14%',
     marginBottom: '8%',
     paddingStart: '5%',
-    justifyContent: "flex-end",
-
+    justifyContent: 'flex-end',
   },
   message: {
     fontSize: 28,
     color: '#fff',
-    fontWeight: 'bold'
-
+    fontWeight: 'bold',
   },
   containerForm: {
     flex: 1,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 25 ,
-    borderTopRightRadius: 25 ,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     paddingStart: '5%',
     paddingEnd: '5%',
   },
@@ -134,13 +151,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 40,
     marginBottom: 12,
-    fontSize: 16
+    fontSize: 16,
   },
   title: {
-    marginTop: '7%', 
+    marginTop: '7%',
     marginBottom: '2%',
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#404040',
@@ -149,15 +166,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 14,
     paddingVertical: 8,
-    borderRadius: 4, 
+    borderRadius: 4,
   },
   textButton: {
-    color: '#fff'
-
-  }, 
+    color: '#fff',
+  },
   register: {
     alignItems: 'center',
-    marginTop: 14
-  }
-
+    marginTop: 14,
+  },
 });
