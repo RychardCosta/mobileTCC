@@ -130,7 +130,7 @@ export default function SignupAluno() {
             name="nome"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-                keyboardType="decimal-pad"
+              
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -145,7 +145,7 @@ export default function SignupAluno() {
             name="sobrenome"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-                keyboardType="decimal-pad"
+                
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}

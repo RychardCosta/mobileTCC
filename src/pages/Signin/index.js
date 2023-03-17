@@ -57,6 +57,7 @@ export default function SignIn() {
           'professorId',
           response.data.user.professorId,
         );
+        console.log(response.data.user.professorId)
       }
       if (response.data.user.tipoDeConta === 'professor') {
         navigation.navigate('MainProfessor');

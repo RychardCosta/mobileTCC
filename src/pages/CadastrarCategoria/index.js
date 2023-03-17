@@ -67,8 +67,7 @@ export default function CadastrarCategora() {
           name="categoria"
           render={({field: {onChange, value, onBlur}}) => (
             <TextInput
-              keyboardType="decimal-pad"
-              style={styles.input}
+             style={styles.input}
               onChangeText={onChange}
               value={value}
               onBlur={onBlur}

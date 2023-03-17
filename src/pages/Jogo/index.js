@@ -33,25 +33,29 @@ export default function Jogo() {
   useEffect(() => {
     AsyncStorage.getItem('cpf').then(cpf => {
       setCpf(cpf);
+      console.log(cpf);
+    
     }, []);
     AsyncStorage.getItem('professorId').then(professorId => {
       setProfessorId(professorId);
+      console.log(professorId);
     }, []);
   }, []);
   useEffect(() => {
-    if (cpf || professorId) {
+    if (cpf) {
       GerarPergunta();
+      console.log(' carregou');
     } else {
-      console.log(cpf);
       console.log('Ainda nao carregou');
     }
 
     async function GerarPergunta() {
       let response = [];
+      console.log(professorId)
       setLoad(true);
       professorId
         ? (response = await api.get(
-            `/pergunta/gerar/${professorId}?verificarPerguntasRepetidas=true&alunoId=${cpf}`,
+            `/pergunta/gerar/${professorId}?verificarPerguntasRepetidas=true&alunoId=${cpf}`
           ))
         : (response = await api.get(`/pergunta/gerar/${cpf}`));
       for (let i = 0; i < response.data.perguntas.length; i++) {
@@ -88,7 +92,7 @@ export default function Jogo() {
         }
       }
     }
-  }, [cpf, index]);
+  }, [cpf, index, professorId]);
 
   const onRefresh = useCallback(() => {
     setLoad(true);
@@ -199,7 +203,7 @@ export default function Jogo() {
   }
 
   return (
-    <ScrollView
+    <View
       style={styles.container}
       refreshControl={
         <RefreshControl refreshing={load} onRefresh={onRefresh} />
@@ -252,7 +256,7 @@ export default function Jogo() {
           </Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 

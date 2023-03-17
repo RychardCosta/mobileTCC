@@ -102,7 +102,7 @@ export default function CadastrarPergunta() {
             name="resposta"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-                keyboardType="decimal-pad"
+           
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -116,7 +116,7 @@ export default function CadastrarPergunta() {
             name="opcao1"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-                keyboardType="decimal-pad"
+           
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}

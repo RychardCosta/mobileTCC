@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import * as Animatable from 'react-native-animatable';
+
 import {useNavigation} from '@react-navigation/native';
 import api from '../../services/api';
 
@@ -58,6 +60,9 @@ export default function MainProfessor() {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
+      Alunos();
+      Categorias();
+      Perguntas();
       setRefreshing(false);
     }, 1000);
   }, []);
@@ -72,7 +77,7 @@ export default function MainProfessor() {
       setQuantidadeDeAlunos(array.length);
     } catch (error) {
       console.log(error);
-      setQuantidadeDeAlunos(0);
+     // setQuantidadeDeAlunos(0);
     }
   }
 
@@ -85,7 +90,7 @@ export default function MainProfessor() {
       setQuantidadeDeCategorias(array.length);
     } catch (error) {
       console.log(error);
-      setQuantidadeDeCategorias(0);
+      //setQuantidadeDeCategorias(0);
     }
   }
 
@@ -98,7 +103,7 @@ export default function MainProfessor() {
       setQuantidadeDePerguntas(array.length);
     } catch (error) {
       console.log(error);
-      setQuantidadeDePerguntas(0);
+      //setQuantidadeDePerguntas(0);
     }
   }
   const handleSubmitCadastrarPerguntas = async () => {
@@ -126,7 +131,7 @@ export default function MainProfessor() {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      <View style={styles.header}>
+      <Animatable.View animation="fadeInDown" style={styles.header}>
         <Text style={styles.textHeader}>
           {' '}
           {cpf ? `Bem vindo ${nome}` : 'Carregando'}
@@ -147,9 +152,10 @@ export default function MainProfessor() {
             : 'Carregando'}
         </Text>
         <Text style={styles.textHeader2}></Text>
-      </View>
-      <View style={styles.containerForm}>
+      </Animatable.View>
+      <Animatable.View animation="fadeInUp" style={styles.containerForm}>
         <Text style={styles.text}>Escolha uma das opções abaixo: </Text>
+        <Animatable.View animation="flipInY" delay={300}>
         <TouchableOpacity
           style={styles.input}
           onPress={() => navigation.navigate('Jogo')}>
@@ -178,11 +184,9 @@ export default function MainProfessor() {
         <TouchableOpacity style={styles.input} onPress={handleSubmitSair}>
           <Text style={styles.textInput}>SAIR</Text>
         </TouchableOpacity>
+          </Animatable.View>
 
-        <TouchableOpacity>
-          <Text>Oi</Text>
-        </TouchableOpacity>
-      </View>
+      </Animatable.View>
     </ScrollView>
   );
 }
