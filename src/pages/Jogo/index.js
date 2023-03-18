@@ -40,6 +40,8 @@ export default function Jogo() {
       setProfessorId(professorId);
       console.log(professorId);
     }, []);
+
+ 
   }, []);
   useEffect(() => {
     if (cpf) {
@@ -52,7 +54,7 @@ export default function Jogo() {
     async function GerarPergunta() {
       let response = [];
       console.log(professorId)
-      setLoad(true);
+     
       professorId
         ? (response = await api.get(
             `/pergunta/gerar/${professorId}?verificarPerguntasRepetidas=true&alunoId=${cpf}`
@@ -85,8 +87,9 @@ export default function Jogo() {
           ]);
           setLoad(false);
           console.log('Pergunta gerada front ');
-
           console.log(cpf);
+          break;
+
         } catch (erro) {
           console.log(erro);
         }
@@ -205,9 +208,7 @@ export default function Jogo() {
   return (
     <View
       style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={load} onRefresh={onRefresh} />
-      }>
+       >
       <View style={styles.perguntaForm}>
         <Text style={{fontSize: 15, color: '#rgb(200,0,0)'}}>
           {' '}

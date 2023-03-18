@@ -147,6 +147,11 @@ export default function MainProfessor() {
           onPress={() => navigation.navigate('Jogo')}>
           <Text style={styles.textInput}>Executar jogo</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.input}
+          onPress={() => navigation.navigate('Ranking')}>
+          <Text style={styles.textInput}>Mostrar rank</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.input} onPress={handleSubmitSair}>
           <Text style={styles.textInput}>SAIR</Text>

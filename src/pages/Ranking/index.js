@@ -1,31 +1,88 @@
-import React from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {View, Text, FlatList, StyleSheet, RefreshControl, ScrollView, SafeAreaView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Animatable from 'react-native-animatable';
+
+import {useNavigation} from '@react-navigation/native';
+import api from '../../services/api';
 
 export default function Ranking() {
-  const [posicao, setPosicao] = React.useState(0);
-  const data = [
-    {id: 0, nome: 'Rychard', sobrenome: 'Costa', pontuação: 100},
-    {id: 0, nome: 'Carlos', sobrenome: 'Jose', pontuação: 90},
-    {id: 0, nome: 'Fabio', sobrenome: 'Lima', pontuação: 160},
-    {id: 0, nome: 'Fabio', sobrenome: 'Lima', pontuação: 15},
-  ];
-  data.sort(compare);
-  mudarId(data);
+  const [data, setData] = useState([]);
+  const [cpf, setCpf] = useState();
+  const [professorId, setProfessorId] = useState();
+  const [refreshing, setRefreshing] = useState(false);
 
-  function compare(a, b) {
-    if (a.pontuação > b.pontuação) return -1;
-    if (a.pontuação < b.pontuação) return 1;
-    return 0;
-  }
 
-  function mudarId(d) {
-    for (let i = 0; i < d.length; i++) {
-      d[i].id = i + 1;
+  useEffect(() => {
+    AsyncStorage.getItem('cpf').then(cpf => {
+      setCpf(cpf);
+    }, []);
+    AsyncStorage.getItem('professorId').then(professorId => {
+      setProfessorId(professorId);
+    }, []);
+
+  }, []);
+
+  useEffect(() => {
+    Dados();
+  }, [cpf, professorId]);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      
+      Dados();
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  async function Dados() {
+    let newArray = [];
+    if (professorId) {
+      try {
+        const response = await api.get(`/user/${professorId}`);
+
+        newArray = response.data.alunos;
+        newArray.sort(compare);
+        setData(colocarId(newArray));
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        console.log('Nao Tem professor');
+
+        const response = await api.get(`/user/${cpf}`);
+        newArray = response.data.alunos;
+        newArray.sort(compare);
+        setData(colocarId(newArray));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    function compare(a, b) {
+      if (a.pontuacao > b.pontuacao) return -1;
+      if (a.pontuacao < b.pontuacao) return 1;
+      return 0;
+    }
+    function colocarId(arr) {
+      let newArrayComId = [];
+      for (i = 0; i < arr.length; i++) {
+        newArrayComId[i] = {id: i + 1, ...arr[i]};
+        console.log(i);
+      }
+      console.log(newArrayComId);
+      return newArrayComId;
     }
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+    <ScrollView
+    
+    refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }>
       <View style={styles.header}>
         <Text style={styles.textHeader}>Posição</Text>
         <Text style={styles.textHeader}>Nome</Text>
@@ -41,12 +98,13 @@ export default function Ranking() {
               <Text style={styles.textHeader}>{item.id}</Text>
               <Text style={styles.textHeader}>{item.nome}</Text>
               <Text style={styles.textHeader}>{item.sobrenome}</Text>
-              <Text style={styles.textHeader}>{item.pontuação}</Text>
+              <Text style={styles.textHeader}>{item.pontuacao}</Text>
             </View>
           )}
         />
       </View>
-    </View>
+    </ScrollView>
+    </SafeAreaView>
   );
 }
 

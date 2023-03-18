@@ -15,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import api from '../../services/api';
 
 export default function MainProfessor() {
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
   const [nome, setNome] = useState();
   const [cpf, setCpf] = useState();
@@ -63,6 +63,7 @@ export default function MainProfessor() {
       Alunos();
       Categorias();
       Perguntas();
+
       setRefreshing(false);
     }, 1000);
   }, []);
@@ -77,16 +78,16 @@ export default function MainProfessor() {
       setQuantidadeDeAlunos(array.length);
     } catch (error) {
       console.log(error);
-     // setQuantidadeDeAlunos(0);
+      // setQuantidadeDeAlunos(0);
     }
   }
 
   async function Categorias() {
     try {
       const response = await api
-        .get(`/categoria/${cpf}`)
+        .get(`/user/${cpf}`)
         .catch(error => console.log(error));
-      const array = response.data.categoria;
+      const array = response.data.categorias;
       setQuantidadeDeCategorias(array.length);
     } catch (error) {
       console.log(error);
@@ -97,9 +98,9 @@ export default function MainProfessor() {
   async function Perguntas() {
     try {
       const response = await api
-        .get(`/pergunta/${cpf}`)
+        .get(`/user/${cpf}`)
         .catch(error => console.log(error));
-      const array = response.data.pergunta;
+      const array = response.data.perguntas;
       setQuantidadeDePerguntas(array.length);
     } catch (error) {
       console.log(error);
@@ -156,36 +157,35 @@ export default function MainProfessor() {
       <Animatable.View animation="fadeInUp" style={styles.containerForm}>
         <Text style={styles.text}>Escolha uma das opções abaixo: </Text>
         <Animatable.View animation="flipInY" delay={300}>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => navigation.navigate('Jogo')}>
-          <Text style={styles.textInput}>Executar jogo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => navigation.navigate('SignupAluno')}>
-          <Text style={styles.textInput}>Cadastrar aluno</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => navigation.navigate('CadastrarCategoria')}>
-          <Text style={styles.textInput}>Cadastrar categoria</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={handleSubmitCadastrarPerguntas}>
-          <Text style={styles.textInput}>Cadastrar pergunta</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => navigation.navigate('Ranking')}>
-          <Text style={styles.textInput}>Mostrar rank</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.input} onPress={handleSubmitSair}>
-          <Text style={styles.textInput}>SAIR</Text>
-        </TouchableOpacity>
-          </Animatable.View>
-
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => navigation.navigate('Jogo')}>
+            <Text style={styles.textInput}>Executar jogo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => navigation.navigate('SignupAluno')}>
+            <Text style={styles.textInput}>Cadastrar aluno</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => navigation.navigate('CadastrarCategoria')}>
+            <Text style={styles.textInput}>Cadastrar categoria</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={handleSubmitCadastrarPerguntas}>
+            <Text style={styles.textInput}>Cadastrar pergunta</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => navigation.navigate('Ranking')}>
+            <Text style={styles.textInput}>Mostrar rank</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.input} onPress={handleSubmitSair}>
+            <Text style={styles.textInput}>SAIR</Text>
+          </TouchableOpacity>
+        </Animatable.View>
       </Animatable.View>
     </ScrollView>
   );
