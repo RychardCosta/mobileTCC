@@ -90,7 +90,17 @@ export default function Ranking() {
         <Text style={styles.textHeader}>Pontuação</Text>
       </View>
       <View>
-        <FlatList
+      {
+          data.map((item) => (
+            <View style={styles.itens}>
+              <Text style={styles.textHeader}>{item.id}</Text>
+              <Text style={styles.textHeader}>{item.nome}</Text>
+              <Text style={styles.textHeader}>{item.sobrenome}</Text>
+              <Text style={styles.textHeader}>{item.pontuacao}</Text>
+            </View>
+          ))
+      }
+        {/* <FlatList
           data={data}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
@@ -101,7 +111,7 @@ export default function Ranking() {
               <Text style={styles.textHeader}>{item.pontuacao}</Text>
             </View>
           )}
-        />
+        /> */}
       </View>
     </ScrollView>
     </SafeAreaView>
