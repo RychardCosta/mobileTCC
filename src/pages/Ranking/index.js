@@ -43,7 +43,7 @@ export default function Ranking() {
 
         newArray = response.data.alunos;
         newArray.sort(compare);
-        setData(colocarId(newArray));
+        setData(colocarId(newArray.slice(0, 10)));
       } catch (error) {
         console.log(error);
       }
@@ -54,7 +54,7 @@ export default function Ranking() {
         const response = await api.get(`/user/${cpf}`);
         newArray = response.data.alunos;
         newArray.sort(compare);
-        setData(colocarId(newArray));
+        setData(colocarId(newArray.slice(0, 10)));
       } catch (error) {
         console.log(error);
       }
@@ -93,10 +93,10 @@ export default function Ranking() {
       {
           data.map((item) => (
             <View style={styles.itens}>
-              <Text style={styles.textHeader}>{item.id}</Text>
-              <Text style={styles.textHeader}>{item.nome}</Text>
-              <Text style={styles.textHeader}>{item.sobrenome}</Text>
-              <Text style={styles.textHeader}>{item.pontuacao}</Text>
+              <Text style={item.cpf === cpf ? styles.textHeaderItsMe :  styles.textHeader}>{item.id}</Text>
+              <Text style={item.cpf === cpf ? styles.textHeaderItsMe :  styles.textHeader}>{item.nome}</Text>
+              <Text style={item.cpf === cpf ? styles.textHeaderItsMe :  styles.textHeader}>{item.sobrenome}</Text>
+              <Text style={item.cpf === cpf ? styles.textHeaderItsMe :  styles.textHeader}>{item.pontuacao}</Text>
             </View>
           ))
       }
@@ -141,5 +141,12 @@ const styles = StyleSheet.create({
     paddingStart: '4%',
     fontWeight: 'bold',
     color: '#fff',
+  }, textHeaderItsMe: {
+    padding: 10,
+    borderWidth: 1,
+    width: '25%',
+    paddingStart: '4%',
+    fontWeight: 'bold',
+    color: 'rgb(255,0,0)',
   },
 });
