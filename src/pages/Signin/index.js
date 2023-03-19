@@ -6,6 +6,7 @@ import {
   TextInput,
   StyleSheet,
   Alert,
+  ImageBackground
 } from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 
@@ -57,7 +58,7 @@ export default function SignIn() {
           'professorId',
           response.data.user.professorId,
         );
-        console.log(response.data.user.professorId)
+        console.log(response.data.user.professorId);
       }
       if (response.data.user.tipoDeConta === 'professor') {
         navigation.navigate('MainProfessor');
@@ -79,7 +80,10 @@ export default function SignIn() {
       <Animatable.View animation="fadeInLeft" style={styles.containerHeader}>
         <Text style={styles.message}> BEM-VINDO(a) </Text>
       </Animatable.View>
-      <Animatable.View animation="fadeInRight" style={styles.containerForm}>
+      <ImageBackground  
+       source={require('../../assets/fundo.png')}
+      imageStyle={styles.image}
+      animation="fadeInRight" style={styles.containerForm}>
         <Text style={styles.title}>CPF </Text>
         <Controller
           control={control}
@@ -116,9 +120,17 @@ export default function SignIn() {
         <TouchableOpacity
           onPress={() => navigation.navigate('Signup')}
           style={styles.register}>
-          <Text>Criar uma conta</Text>
+          <Text style={{fontWeight: 'bold', color: "rgba(255,255,255,0.8)"}}>Criar uma conta</Text>
         </TouchableOpacity>
-      </Animatable.View>
+        <View style={styles.containerImage}>
+      
+         
+        </View>
+        
+      
+            
+       
+      </ImageBackground>
     </View>
   );
 }
@@ -126,7 +138,7 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#404040',
+    backgroundColor: '#fff',
   },
   containerHeader: {
     marginTop: '14%',
@@ -136,7 +148,7 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 28,
-    color: '#fff',
+    color: '#404040',
     fontWeight: 'bold',
   },
   containerForm: {
@@ -153,6 +165,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginBottom: 12,
     fontSize: 16,
+    backgroundColor: "#fff"
   },
   title: {
     marginTop: '7%',
@@ -171,9 +184,29 @@ const styles = StyleSheet.create({
   },
   textButton: {
     color: '#fff',
+     fontWeight: 'bold',
   },
   register: {
     alignItems: 'center',
     marginTop: 14,
+    borderWidth: 1,
+     borderRadius: 5,
+     backgroundColor: "#404040"
+  },
+  image: {
+    flex: 1,
+    width: 400,
+    height: 400,
+    marginTop: 100,
+    
+    marginTop: 175
+
+
+    
+  },
+  containerImage: {
+    flex: 1,
+    flexDirection: 'row',
+    
   },
 });

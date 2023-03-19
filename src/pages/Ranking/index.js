@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     height: 50,
-    backgroundColor: '#00b4fc',
+    backgroundColor: '#404040',
   },
   textHeader: {
     padding: 10,
