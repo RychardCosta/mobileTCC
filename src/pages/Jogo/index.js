@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#0a4b75"
   },
   buttom: {
-    backgroundColor: '#ffff',
+    backgroundColor: '#rgba(255,255,255,0.9)',
     borderWidth: 1,
     borderRadius: 15,
     height: 60,

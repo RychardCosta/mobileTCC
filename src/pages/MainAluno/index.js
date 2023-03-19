@@ -166,7 +166,7 @@ export default function MainProfessor() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#C4E4F4',
+    backgroundColor: '#fff',
   },
   input: {
     borderWidth: 1,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 16,
     paddingStart: '25%',
-    backgroundColor: '#0a4b75',
+    backgroundColor: '#404040',
   },
   textInput: {
     marginTop: '2%',
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   containerForm: {
     flex: 1,
-    backgroundColor: '#C4E4F4',
+    backgroundColor: '#fff',
     //borderRadius: 10 ,
 
     paddingStart: '5%',
@@ -203,14 +203,14 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   textHeader: {
-    color: '#000',
+    color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 10,
     marginTop: 10,
   },
   textHeader2: {
-    color: '#000',
+    color: '#fff',
     fontSize: 15,
     fontWeight: 'bold',
     marginLeft: 10,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   header: {
     //borderWidth: 1,
-    backgroundColor: '#C4E4F4',
+    backgroundColor: '#404040',
     // borderRadius: 25 ,
     borderWidth: 1,
     borderColor: '#404040',

@@ -231,14 +231,14 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   textHeader: {
-    color: '#fff',
+    color: '#000',
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 10,
     marginTop: 10,
   },
   textHeader2: {
-    color: '#fff',
+    color: '#000',
     fontSize: 15,
     fontWeight: 'bold',
     marginLeft: 10,
