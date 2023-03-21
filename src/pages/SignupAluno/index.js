@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Alert,
   Text,
@@ -8,10 +8,10 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
-import {useHeaderHeight} from '@react-navigation/elements';
-import {useNavigation} from '@react-navigation/native';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useForm, Controller} from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 import api from '../../services/api.js';
 
@@ -25,7 +25,7 @@ export default function SignupAluno() {
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm({});
   const navigation = useNavigation();
   const height = useHeaderHeight();
@@ -118,9 +118,9 @@ export default function SignupAluno() {
           <Controller
             control={control}
             name="cpf"
-            render={({field: {onChange, value, onBlur}}) => (
+            render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
-              returnKeyType = "next"
+                returnKeyType="next"
                 keyboardType="decimal-pad"
                 style={styles.input}
                 onChangeText={onChange}
@@ -132,12 +132,12 @@ export default function SignupAluno() {
           />
           <Text style={styles.titleForm}>Nome</Text>
           <Controller
-          
+
             control={control}
             name="nome"
-            render={({field: {onChange, value, onBlur}}) => (
+            render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
-              returnKeyType = "next"
+                returnKeyType="next"
                 ref={refNome}
                 style={styles.input}
                 onChangeText={onChange}
@@ -152,10 +152,10 @@ export default function SignupAluno() {
           <Controller
             control={control}
             name="sobrenome"
-            render={({field: {onChange, value, onBlur}}) => (
+            render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
-              returnKeyType = "next"
-              ref={refSobrenome}
+                returnKeyType="next"
+                ref={refSobrenome}
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -165,14 +165,14 @@ export default function SignupAluno() {
             )}
           />
           <Text style={styles.titleForm}>Senha</Text>
-          <Controller 
+          <Controller
 
             control={control}
             name="senha"
-            render={({field: {onChange, value, onBlur}}) => (
+            render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
-              returnKeyType = "next"
-              ref={refSenha}
+                returnKeyType="next"
+                ref={refSenha}
                 secureTextEntry={true}
                 style={styles.input}
                 onChangeText={onChange}
@@ -187,9 +187,9 @@ export default function SignupAluno() {
           <Controller
             control={control}
             name="repetirSenha"
-            render={({field: {onChange, value, onBlur}}) => (
+            render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
-              ref={refRepetirSenha}
+                ref={refRepetirSenha}
                 secureTextEntry={true}
                 style={styles.input}
                 onChangeText={onChange}

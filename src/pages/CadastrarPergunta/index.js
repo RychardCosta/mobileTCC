@@ -105,31 +105,20 @@ export default function CadastrarPergunta() {
         <Animatable.View animation="fadeInUp" style={styles.containerForm}>
           <Text style={styles.titleForm}>Categoria</Text>
           <SelectDropdown
+          rowStyle={styles.input}
+          buttonStyle={styles.input}  
+          searchInputStyle={styles.input}  
+             
+          defaultButtonText="Categorias"     
           defaultValueByIndex ={0}
             data={categoria}
             search={true}
             onSelect={(selectedItem, index) => {
               setCategoriaEscolhida(selectedItem);
-              console.log(selectedItem, index);
-              
+              console.log(selectedItem, index);          
             }}
           />
-          {/* <Controller
-            control={control}
-            name="categoria"
-            render={({field: {onChange, value, onBlur}}) => (
-              <TextInput
-              returnKeyType='next'
-                style={styles.input}
-                onChangeText={onChange}
-                value={value}
-                onBlur={onBlur}
-                placeholder="PADRÃO GERAL"
-                onSubmitEditing={() => refPergunta.current.focus()}
-                
-              />
-            )}
-          /> */}
+       
 
           <Text style={styles.titleForm}>Pergunta</Text>
           <Controller

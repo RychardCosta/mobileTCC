@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert,
   Text,
@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
-import {useHeaderHeight} from '@react-navigation/elements';
-import {useNavigation} from '@react-navigation/native';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useForm, Controller} from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 import * as Animatable from 'react-native-animatable';
 
@@ -19,7 +19,7 @@ export default function CadastrarCategora() {
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm({});
   const navigation = useNavigation();
   const height = useHeaderHeight();
@@ -65,9 +65,9 @@ export default function CadastrarCategora() {
         <Controller
           control={control}
           name="categoria"
-          render={({field: {onChange, value, onBlur}}) => (
+          render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
-             style={styles.input}
+              style={styles.input}
               onChangeText={onChange}
               value={value}
               onBlur={onBlur}
@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
   },
 
   containerForm: {
-    // /flex: 1,
     backgroundColor: '#fff',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,17 +7,25 @@ import {
   SafeAreaView,
   StyleSheet,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import api from '../../services/api';
 
 export default function CategoriaJogo() {
+  const navigation = useNavigation()
   const [dados, setDados] = useState([]);
 
   useEffect(() => {
     categorias();
   }, []);
+
+  const goToGame = (item) => {
+    navigation.navigate("Jogo", { categoriaID: item.id })
+
+
+  }
 
   const categorias = async () => {
     const cpf = await AsyncStorage.getItem('cpf');
@@ -46,11 +54,13 @@ export default function CategoriaJogo() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={{ marginTop: 15}}>
-       
+      <ScrollView style={{ marginTop: 15 }}>
+
         {dados.map(item => (
-          <View style={{flex: 1, height: 60}}>
-            <TouchableOpacity style={styles.button}>
+          <View style={{ flex: 1, height: 60 }}>
+            <TouchableOpacity style={styles.button}
+              onPress={() => goToGame(item)}
+            >
               <Text style={styles.text}>{item.categoria}</Text>
             </TouchableOpacity>
           </View>
@@ -67,7 +77,7 @@ const styles = StyleSheet.create({
     height: '80%',
     paddingStart: '5%',
     paddingEnd: '5%',
-    
+
   },
   text: {
     marginTop: '2%',
@@ -81,12 +91,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     height: 40,
-   
+
     fontSize: 16,
     paddingStart: '25%',
     backgroundColor: '#404040',
-    
-   
+
+
   },
 
 });

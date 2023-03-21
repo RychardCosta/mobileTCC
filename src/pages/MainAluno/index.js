@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,104 +11,28 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as Animatable from 'react-native-animatable';
 
-import {useNavigation} from '@react-navigation/native';
-import api from '../../services/api';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function MainProfessor() {
   const [refreshing, setRefreshing] = React.useState(false);
   const navigation = useNavigation();
   const [nome, setNome] = useState();
-  const [cpf, setCpf] = useState();
-  const [quantidadeDeAlunos, setQuantidadeDeAlunos] = useState(0);
-  const [quantidadeDeCategorias, setQuantidadeDeCategorias] = useState(0);
-  const [quantidadeDePerguntas, setQuantidadeDePerguntas] = useState(0);
-  const [hasCategoria, setHasCategoria] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem('nome').then(nome => {
       setNome(nome);
     }, []);
-    AsyncStorage.getItem('cpf').then(cpf => {
-      setCpf(cpf);
-    }, []);
+
   }, []);
-  useEffect(() => {
-    if (cpf) {
-      console.log('cpf');
-      console.log(cpf);
-      Alunos();
-      Categorias();
-      Perguntas();
-    } else {
-      console.log('Se, cpf ainda');
-    }
-  }, [cpf]);
-
-  // useEffect( () => {
-  //   AsyncStorage.getItem('nome').then(nome => {
-  //     setNome(nome)
-  //        }, [])
-  //   AsyncStorage.getItem('cpf').then(cpf => {
-  //     setCpf(cpf)
-  //        }, [])
-  //        Alunos()
-  //        Categorias()
-  //        Perguntas()
-
-  //       });
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      Alunos();
-      Categorias();
-      Perguntas();
+
       setRefreshing(false);
     }, 1000);
   }, []);
-
-  async function Alunos() {
-    try {
-      const response = await api
-        .get(`/user/${cpf}`)
-        .catch(error => console.log(error));
-      const array = response.data.alunos;
-
-      setQuantidadeDeAlunos(array.length);
-    } catch (error) {
-      console.log(error);
-     // setQuantidadeDeAlunos(0);
-    }
-  }
-
-  async function Categorias() {
-    try {
-      const response = await api
-        .get(`/categoria/${cpf}`)
-        .catch(error => console.log(error));
-      const array = response.data.categoria;
-      setQuantidadeDeCategorias(array.length);
-    } catch (error) {
-      console.log(error);
-      //setQuantidadeDeCategorias(0);
-    }
-  }
-
-  async function Perguntas() {
-    try {
-      const response = await api
-        .get(`/pergunta/${cpf}`)
-        .catch(error => console.log(error));
-      const array = response.data.pergunta;
-      setQuantidadeDePerguntas(array.length);
-    } catch (error) {
-      console.log(error);
-      //setQuantidadeDePerguntas(0);
-    }
-  }
-  const handleSubmitCadastrarPerguntas = async () => {
-    navigation.navigate('CadastrarPergunta');
-  };
 
   const handleSubmitSair = async () => {
     try {
@@ -134,7 +58,7 @@ export default function MainProfessor() {
       <Animatable.View animation="fadeInDown" style={styles.header}>
         <Text style={styles.textHeader}>
           {' '}
-          {cpf ? `Bem vindo ${nome}` : 'Carregando'}
+          {`Bem vindo ${nome}`}
         </Text>
 
         <Text style={styles.textHeader2}></Text>
@@ -142,21 +66,21 @@ export default function MainProfessor() {
       <Animatable.View animation="fadeInUp" style={styles.containerForm}>
         <Text style={styles.text}>Escolha uma das opções abaixo: </Text>
         <Animatable.View animation="flipInY" delay={300}>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => navigation.navigate('CategoriaJogo')}>
-          <Text style={styles.textInput}>Executar jogo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => navigation.navigate('Ranking')}>
-          <Text style={styles.textInput}>Mostrar rank</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => navigation.navigate('CategoriaJogo')}>
+            <Text style={styles.textInput}>Executar jogo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => navigation.navigate('Ranking')}>
+            <Text style={styles.textInput}>Mostrar rank</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.input} onPress={handleSubmitSair}>
-          <Text style={styles.textInput}>SAIR</Text>
-        </TouchableOpacity>
-          </Animatable.View>
+          <TouchableOpacity style={styles.input} onPress={handleSubmitSair}>
+            <Text style={styles.textInput}>SAIR</Text>
+          </TouchableOpacity>
+        </Animatable.View>
 
       </Animatable.View>
     </ScrollView>
@@ -187,13 +111,11 @@ const styles = StyleSheet.create({
   containerForm: {
     flex: 1,
     backgroundColor: '#fff',
-    //borderRadius: 10 ,
+
 
     paddingStart: '5%',
     paddingEnd: '5%',
     marginTop: '20%',
-    //borderWidth: 1,
-    // borderColor: "#404040",
     borderRadius: 5,
   },
   text: {
@@ -217,9 +139,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   header: {
-    //borderWidth: 1,
     backgroundColor: '#404040',
-    // borderRadius: 25 ,
     borderWidth: 1,
     borderColor: '#404040',
     borderRadius: 5,

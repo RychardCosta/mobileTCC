@@ -1,65 +1,50 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   StyleSheet,
   Alert,
-  RefreshControl,
+
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import api from '../../services/api';
 
-export default function Jogo() {
+export default function Jogo({ route }) {
+  const { categoriaID } = route.params;
   const navigation = useNavigation();
   const [pergunta, setPergunta] = useState('');
   const [opcao, setOpcao] = useState([]);
-  const [perguntaId, setPerguntaId] = useState('');
   const [message, setMessage] = useState('');
   const [resposta, setResposta] = useState('');
   const [pontos, setPontos] = useState(0);
   const [pontosObtidos, setPontosObtidos] = useState(0);
-  const [cpf, setCpf] = useState('');
-  const [professorId, setProfessorId] = useState('');
+
+  const [perguntaId, setPerguntaId] = useState('');
   const [arrayPerguntas, setArrayPerguntas] = useState([]);
-  const [load, setLoad] = useState(false);
+  const [load, setLoad] = useState(true);
   const [index, setIndex] = useState(0);
   const indexView = [0, 1, 2, 3, 4];
   shuffleArray(indexView);
 
   useEffect(() => {
-    AsyncStorage.getItem('cpf').then(cpf => {
-      setCpf(cpf);
-      console.log(cpf);
-    
-    }, []);
-    AsyncStorage.getItem('professorId').then(professorId => {
-      setProfessorId(professorId);
-      console.log(professorId);
-    }, []);
+    GerarPergunta();
+  }, [index])
 
- 
-  }, []);
-  useEffect(() => {
+  async function GerarPergunta() {
+    const cpf = await AsyncStorage.getItem('cpf');
+    const professorId = await AsyncStorage.getItem('professorId');
+    let response = [];
+    setLoad(true)
+
     if (cpf) {
-      GerarPergunta();
-      console.log(' carregou');
-    } else {
-      console.log('Ainda nao carregou');
-    }
-
-    async function GerarPergunta() {
-      let response = [];
-      console.log(professorId)
-     
       professorId
         ? (response = await api.get(
-            `/pergunta/gerar/${professorId}?verificarPerguntasRepetidas=true&alunoId=${cpf}`
-          ))
-        : (response = await api.get(`/pergunta/gerar/${cpf}`));
+          `/pergunta/gerar/${professorId}?verificarPerguntasRepetidas=true&alunoId=${cpf}&categoriaID=${categoriaID}`
+        ))
+        : (response = await api.get(`/pergunta/gerar/${cpf}?categoriaID=${categoriaID}`));
       for (let i = 0; i < response.data.perguntas.length; i++) {
         setArrayPerguntas(oldArray => [response.data.perguntas]);
         try {
@@ -94,57 +79,20 @@ export default function Jogo() {
           console.log(erro);
         }
       }
+
+    } else {
+
     }
-  }, [cpf, index, professorId]);
 
-  const onRefresh = useCallback(() => {
-    setLoad(true);
-    setTimeout(() => {}, 1000);
-  }, []);
 
-  // useEffect(()=>{
-  //     AsyncStorage.getItem('cpf').then(cpf => {
-  //       setCpf(cpf)
-  //          }, [])
-  //     AsyncStorage.getItem('professorId').then(professoId => {
-  //       setProfessorId(professoId)
-  //          }, [])
-  //          GerarPergunta()
 
-  //   async function GerarPergunta(){
-  //     let response = []
 
-  //    professorId ?  response =  await api.get(`/pergunta/gerar/${professorId}`) :  response =  await api.get(`/pergunta/gerar/${cpf}`)
+  }
 
-  // for(let i = 0;i <1; i++ ){
-  //   setArrayPerguntas((oldArray) => [response.data.perguntas])
-  //   try{
-  //     setPerguntaId(response.data.perguntas[0].id)
-  //     setPontos(response.data.perguntas[0].valorDaPontuacao)
-  //     setMessage(response.data.message)
-  //     setPergunta(response.data.perguntas[0].pergunta)
-  //     setResposta(response.data.perguntas[0].resposta)
-  //     setOpcao(oldArray => [response.data.perguntas[0].resposta])
-  //     setOpcao(oldArray => [...oldArray, response.data.perguntas[0].opcao1])
-  //     setOpcao(oldArray => [...oldArray, response.data.perguntas[0].opcao2])
-  //     setOpcao(oldArray => [...oldArray, response.data.perguntas[0].opcao3])
-  //     setOpcao(oldArray => [...oldArray, response.data.perguntas[0].opcao4])
-
-  //       }catch(erro){
-  //         console.log(erro)
-  //       }
-
-  //     }
-
-  //     if(arrayPerguntas != response.data.perguntas){
-  //       setLoad(load+ 1)
-
-  //     }
-
-  //   }
-  //     }, [load, index])
 
   const verificarResposta = async opcaEscolhida => {
+    const cpf = await AsyncStorage.getItem('cpf');
+    const professorId = await AsyncStorage.getItem('professorId');
     console.log('Pergunta Id');
     console.log(perguntaId);
 
@@ -208,9 +156,9 @@ export default function Jogo() {
   return (
     <View
       style={styles.container}
-       >
+    >
       <View style={styles.perguntaForm}>
-        <Text style={{fontSize: 15, color: '#rgb(200,0,0)'}}>
+        <Text style={{ fontSize: 15, color: '#rgb(200,0,0)' }}>
           {' '}
           {load ? '' : message}{' '}
         </Text>
@@ -265,7 +213,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0a0310',
-    // backgroundColor: "#0a4b75"
   },
   buttom: {
     backgroundColor: '#rgba(255,255,255,0.9)',
@@ -291,7 +238,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonsContainer: {
-    // backgroundColor: "rgb(0,0,255)",
     paddingStart: '5%',
     height: 600,
     paddingTop: 30,
