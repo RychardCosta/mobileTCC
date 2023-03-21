@@ -1,11 +1,10 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {
-  View,
   Text,
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
-  ScrollView,ImageBackground
+  ScrollView
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -18,92 +17,45 @@ export default function MainProfessor() {
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
   const [nome, setNome] = useState();
-  const [cpf, setCpf] = useState();
   const [quantidadeDeAlunos, setQuantidadeDeAlunos] = useState(0);
   const [quantidadeDeCategorias, setQuantidadeDeCategorias] = useState(0);
   const [quantidadeDePerguntas, setQuantidadeDePerguntas] = useState(0);
-  const [hasCategoria, setHasCategoria] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem('nome').then(nome => {
-      setNome(nome);
-    }, []);
-    AsyncStorage.getItem('cpf').then(cpf => {
-      setCpf(cpf);
-    }, []);
+    getDados();
   }, []);
-  useEffect(() => {
-    if (cpf) {
-      console.log('cpf');
-      console.log(cpf);
-      Alunos();
-      Categorias();
-      Perguntas();
-    } else {
-      console.log('Se, cpf ainda');
-    }
-  }, [cpf]);
-
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(async () => {
-      await AsyncStorage.getItem('nome').then(nome => {
-        setNome(nome);
-      }, []);
-      await AsyncStorage.getItem('cpf').then(cpf => {
-        setCpf(cpf);
-      }, []);
-      await Alunos();
-      await Categorias();
-      await Perguntas();
+      getDados();
 
       setRefreshing(false);
     }, 1000);
   }, []);
 
-  async function Alunos() {
-    try {
-      const response = await api
-        .get(`/user/${cpf}`)
-        .catch(error => console.log(error));
-      const array = response.data.alunos;
+  async function getDados() {
+    const cpf = await AsyncStorage.getItem('cpf');
 
-      setQuantidadeDeAlunos(array.length);
+    await AsyncStorage.getItem('nome').then(nome => {
+      setNome(nome);
+    }, []);
+
+    try {
+      getDadosUser(cpf);
     } catch (error) {
       console.log(error);
-      // setQuantidadeDeAlunos(0);
     }
-  }
 
-  async function Categorias() {
-    try {
-      const response = await api
-        .get(`/user/${cpf}`)
-        .catch(error => console.log(error));
-      const array = response.data.categorias;
-      setQuantidadeDeCategorias(array.length);
-    } catch (error) {
-      console.log(error);
-      //setQuantidadeDeCategorias(0);
+    async function getDadosUser(user) {
+      const response = await api.get(`/user/${user}`);
+      console.log('response.data.categorias');
+      console.log(response.data);
+      setQuantidadeDeAlunos(response.data.alunos.length);
+      setQuantidadeDeCategorias(response.data.categorias.length);
+      setQuantidadeDePerguntas(response.data.perguntas.length);
     }
   }
-
-  async function Perguntas() {
-    try {
-      const response = await api
-        .get(`/user/${cpf}`)
-        .catch(error => console.log(error));
-      const array = response.data.perguntas;
-      setQuantidadeDePerguntas(array.length);
-    } catch (error) {
-      console.log(error);
-      //setQuantidadeDePerguntas(0);
-    }
-  }
-  const handleSubmitCadastrarPerguntas = async () => {
-    navigation.navigate('CadastrarPergunta');
-  };
 
   const handleSubmitSair = async () => {
     try {
@@ -127,24 +79,17 @@ export default function MainProfessor() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <Animatable.View animation="fadeInDown" style={styles.header}>
-        <Text style={styles.textHeader}>
+        <Text style={styles.textHeader}> {`Bem vindo ${nome}`}</Text>
+        <Text style={styles.textHeader2}>
           {' '}
-          {cpf ? `Bem vindo ${nome}` : 'Carregando'}
+          {`Quantidade de alunos: ${quantidadeDeAlunos}`}
         </Text>
         <Text style={styles.textHeader2}>
           {' '}
-          {cpf ? `Quantidade de alunos: ${quantidadeDeAlunos}` : 'Carregando'}
+          {`Quantidade de categorias: ${quantidadeDeCategorias}`}
         </Text>
         <Text style={styles.textHeader2}>
-          {' '}
-          {cpf
-            ? `Quantidade de categorias: ${quantidadeDeCategorias}`
-            : 'Carregando'}
-        </Text>
-        <Text style={styles.textHeader2}>
-          {cpf
-            ? `Quantidade de perguntas: ${quantidadeDePerguntas}`
-            : 'Carregando'}
+          {`Quantidade de perguntas: ${quantidadeDePerguntas}`}
         </Text>
         <Text style={styles.textHeader2}></Text>
       </Animatable.View>
@@ -152,31 +97,31 @@ export default function MainProfessor() {
         <Text style={styles.text}>Escolha uma das opções abaixo: </Text>
         <Animatable.View animation="flipInY" delay={300}>
           <TouchableOpacity
-            style={styles.input}
-            onPress={() => navigation.navigate('Jogo')}>
+            style={styles.button}
+            onPress={() => navigation.navigate('CategoriaJogo')}>
             <Text style={styles.textInput}>Executar jogo</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.input}
+            style={styles.button}
             onPress={() => navigation.navigate('SignupAluno')}>
             <Text style={styles.textInput}>Cadastrar aluno</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.input}
+            style={styles.button}
             onPress={() => navigation.navigate('CadastrarCategoria')}>
             <Text style={styles.textInput}>Cadastrar categoria</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.input}
-            onPress={handleSubmitCadastrarPerguntas}>
+            style={styles.button}
+            onPress={() => navigation.navigate('CadastrarPergunta')}>
             <Text style={styles.textInput}>Cadastrar pergunta</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.input}
+            style={styles.button}
             onPress={() => navigation.navigate('Ranking')}>
             <Text style={styles.textInput}>Mostrar rank</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.input} onPress={handleSubmitSair}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmitSair}>
             <Text style={styles.textInput}>SAIR</Text>
           </TouchableOpacity>
         </Animatable.View>
@@ -190,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgb(255,255,255)',
   },
-  input: {
+  button: {
     borderWidth: 1,
     borderRadius: 10,
     height: 40,

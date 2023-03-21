@@ -144,7 +144,7 @@ export default function MainProfessor() {
         <Animatable.View animation="flipInY" delay={300}>
         <TouchableOpacity
           style={styles.input}
-          onPress={() => navigation.navigate('Jogo')}>
+          onPress={() => navigation.navigate('CategoriaJogo')}>
           <Text style={styles.textInput}>Executar jogo</Text>
         </TouchableOpacity>
         <TouchableOpacity

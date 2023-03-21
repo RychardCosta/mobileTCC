@@ -3,7 +3,7 @@ import {View, Text, FlatList, StyleSheet, RefreshControl, ScrollView, SafeAreaVi
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Animatable from 'react-native-animatable';
 
-import {useNavigation} from '@react-navigation/native';
+
 import api from '../../services/api';
 
 export default function Ranking() {

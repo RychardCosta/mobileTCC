@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   Alert,
   Text,
@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
+import SelectDropdown from 'react-native-select-dropdown';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,12 +19,14 @@ import * as Animatable from 'react-native-animatable';
 import api from '../../services/api.js';
 
 export default function CadastrarPergunta() {
-  const refPergunta = useRef("pergunta");
-  const refResposta = useRef("resposta");
-  const refOpcao1 = useRef("opcao1");
-  const refOpcao2 = useRef("opcao2");
-  const refOpcao3 = useRef("opcao3");
-  const refOpcao4 = useRef("opcao4");
+  const [categoria, setCategoria] = useState([]);
+  const [categoriaEscolhida, setCategoriaEscolhida] = useState([]);
+  const refPergunta = useRef('pergunta');
+  const refResposta = useRef('resposta');
+  const refOpcao1 = useRef('opcao1');
+  const refOpcao2 = useRef('opcao2');
+  const refOpcao3 = useRef('opcao3');
+  const refOpcao4 = useRef('opcao4');
 
   const {
     control,
@@ -33,15 +36,16 @@ export default function CadastrarPergunta() {
   const navigation = useNavigation();
   const height = useHeaderHeight();
 
-  const handleSubmitCriarPergunta = async data => {
-    console.log(data);
+  const handleSubmitCriarPergunta = async (data) => {
+    console.log("categoriaEscolhida");
+    console.log(categoriaEscolhida);
     try {
       const cpf = await AsyncStorage.getItem('cpf');
 
       const response = await api.post('pergunta', {
         pergunta: data.pergunta,
         resposta: data.resposta,
-        categoriaName: data.categoria ? data.categoria : 'GERAL',
+        categoriaName: categoriaEscolhida ? categoriaEscolhida : 'GERAL',
         professorId: cpf,
         opcao1: data.opcao1,
         opcao2: data.opcao2,
@@ -66,7 +70,30 @@ export default function CadastrarPergunta() {
       ]);
     }
   };
+  useEffect(() => {
+    getDados();
+  }, []);
 
+  async function getDados() {
+    const cpf = await AsyncStorage.getItem('cpf');
+
+    try {
+      await getDadosUser(cpf);
+    } catch (error) {
+      console.log(error);
+    }
+
+    async function getDadosUser(user) {
+      const response = await api.get(`/user/${user}`);
+      console.log('response.data.categorias');
+      console.log(response.data);
+
+      for (item of response.data.categorias) {
+        setCategoria(oldArray => [...oldArray, item.categoria]);
+      }
+      console.log(categoria);
+    }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -77,7 +104,17 @@ export default function CadastrarPergunta() {
       <ScrollView>
         <Animatable.View animation="fadeInUp" style={styles.containerForm}>
           <Text style={styles.titleForm}>Categoria</Text>
-          <Controller
+          <SelectDropdown
+          defaultValueByIndex ={0}
+            data={categoria}
+            search={true}
+            onSelect={(selectedItem, index) => {
+              setCategoriaEscolhida(selectedItem);
+              console.log(selectedItem, index);
+              
+            }}
+          />
+          {/* <Controller
             control={control}
             name="categoria"
             render={({field: {onChange, value, onBlur}}) => (
@@ -92,7 +129,7 @@ export default function CadastrarPergunta() {
                 
               />
             )}
-          />
+          /> */}
 
           <Text style={styles.titleForm}>Pergunta</Text>
           <Controller
@@ -100,8 +137,8 @@ export default function CadastrarPergunta() {
             name="pergunta"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-              ref={refPergunta}
-              returnKeyType='next'
+                ref={refPergunta}
+                returnKeyType="next"
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -116,9 +153,9 @@ export default function CadastrarPergunta() {
             name="resposta"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-              ref={refResposta}
-              returnKeyType='next'
-              onSubmitEditing={() => refOpcao1.current.focus()}
+                ref={refResposta}
+                returnKeyType="next"
+                onSubmitEditing={() => refOpcao1.current.focus()}
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -132,9 +169,9 @@ export default function CadastrarPergunta() {
             name="opcao1"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-              ref={refOpcao1}
-              onSubmitEditing={() => refOpcao2.current.focus()}
-              returnKeyType='next'
+                ref={refOpcao1}
+                onSubmitEditing={() => refOpcao2.current.focus()}
+                returnKeyType="next"
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -148,9 +185,9 @@ export default function CadastrarPergunta() {
             name="opcao2"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-              ref={refOpcao2}
-              onSubmitEditing={() => refOpcao3.current.focus()}
-              returnKeyType='next'
+                ref={refOpcao2}
+                onSubmitEditing={() => refOpcao3.current.focus()}
+                returnKeyType="next"
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -162,12 +199,11 @@ export default function CadastrarPergunta() {
           <Controller
             control={control}
             name="opcao3"
-            
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-              ref={refOpcao3}
-              onSubmitEditing={() => refOpcao4.current.focus()}
-              returnKeyType='next'
+                ref={refOpcao3}
+                onSubmitEditing={() => refOpcao4.current.focus()}
+                returnKeyType="next"
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -181,7 +217,7 @@ export default function CadastrarPergunta() {
             name="opcao4"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-              ref={refOpcao4}
+                ref={refOpcao4}
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -191,7 +227,7 @@ export default function CadastrarPergunta() {
           />
           <Animatable.View animation="flipInY" delay={300}>
             <TouchableOpacity
-              onPress={handleSubmit(handleSubmitCriarPergunta)}
+              onPress={handleSubmit(handleSubmitCriarPergunta, categoriaEscolhida)}
               style={styles.button}>
               <Text style={styles.textButton}>Criar pergunta</Text>
             </TouchableOpacity>
