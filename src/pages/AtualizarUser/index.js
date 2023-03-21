@@ -48,6 +48,7 @@ export default function AtualizarUser() {
         try {
             const cpf = await AsyncStorage.getItem('cpf');
             const professorId = await AsyncStorage.getItem('professorId');
+            await AsyncStorage.setItem('nome', data.nome);
 
             await api.put(`/user/${cpf}`, {
                 nome: data.nome,
