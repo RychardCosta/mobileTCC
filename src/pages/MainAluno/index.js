@@ -1,38 +1,39 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  RefreshControl,
-  ScrollView,
+
+  SafeAreaView
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import * as Animatable from 'react-native-animatable';
 
 import { useNavigation } from '@react-navigation/native';
 
-
 export default function MainProfessor() {
-  const [refreshing, setRefreshing] = React.useState(false);
+
+
+ 
   const navigation = useNavigation();
   const [nome, setNome] = useState();
+
+
+
+
 
   useEffect(() => {
     AsyncStorage.getItem('nome').then(nome => {
       setNome(nome);
     }, []);
-
+  
   }, []);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
+ 
 
-      setRefreshing(false);
-    }, 1000);
-  }, []);
+
 
   const handleSubmitSair = async () => {
     try {
@@ -50,11 +51,9 @@ export default function MainProfessor() {
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+    <SafeAreaView>
+
+
       <Animatable.View animation="fadeInDown" style={styles.header}>
         <Text style={styles.textHeader}>
           {' '}
@@ -67,23 +66,40 @@ export default function MainProfessor() {
         <Text style={styles.text}>Escolha uma das opções abaixo: </Text>
         <Animatable.View animation="flipInY" delay={300}>
           <TouchableOpacity
-            style={styles.input}
+            style={styles.button}
             onPress={() => navigation.navigate('CategoriaJogo')}>
             <Text style={styles.textInput}>Executar jogo</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.input}
+            style={styles.button}
             onPress={() => navigation.navigate('Ranking')}>
             <Text style={styles.textInput}>Mostrar rank</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.input} onPress={handleSubmitSair}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("AtualizarUser")}>
+            <Text style={styles.textInput}>Atualizar dados</Text>
+          </TouchableOpacity>
+
+
+
+
+          <TouchableOpacity style={styles.button} onPress={handleSubmitSair}>
             <Text style={styles.textInput}>SAIR</Text>
           </TouchableOpacity>
+
+
         </Animatable.View>
 
+
+
+
       </Animatable.View>
-    </ScrollView>
+
+
+
+    </SafeAreaView>
   );
 }
 
@@ -92,7 +108,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  input: {
+  button: {
     borderWidth: 1,
     borderRadius: 10,
     height: 40,
@@ -144,4 +160,5 @@ const styles = StyleSheet.create({
     borderColor: '#404040',
     borderRadius: 5,
   },
-});
+})
+

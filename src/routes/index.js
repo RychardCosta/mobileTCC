@@ -11,6 +11,7 @@ import CadastrarCategoria from '../pages/CadastrarCategoria';
 import CadastrarPergunta from '../pages/CadastrarPergunta';
 import Ranking from '../pages/Ranking';
 import CategoriaJogo from '../pages/CategoriaJogo';
+import AtualizarUser from '../pages/AtualizarUser';
 
 const Stack = createStackNavigator();
 
@@ -76,6 +77,11 @@ export default function Routes() {
         name="CategoriaJogo"
         component={CategoriaJogo}
         options={{title: 'Categoria de jogos', headerShown: true}}
+      />
+      <Stack.Screen
+        name="AtualizarUser"
+        component={AtualizarUser}
+        options={ {headerShown: false}}
       />
     </Stack.Navigator>
   );

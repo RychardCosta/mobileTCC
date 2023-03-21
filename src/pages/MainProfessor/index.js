@@ -1,25 +1,33 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Text,
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
-  ScrollView
+  ScrollView,
+  View,
+  TextInput,
+  Alert
 } from 'react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as Animatable from 'react-native-animatable';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
 
 export default function MainProfessor() {
+
+  
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
   const [nome, setNome] = useState();
   const [quantidadeDeAlunos, setQuantidadeDeAlunos] = useState(0);
   const [quantidadeDeCategorias, setQuantidadeDeCategorias] = useState(0);
   const [quantidadeDePerguntas, setQuantidadeDePerguntas] = useState(0);
+
+
 
   useEffect(() => {
     getDados();
@@ -36,6 +44,7 @@ export default function MainProfessor() {
 
   async function getDados() {
     const cpf = await AsyncStorage.getItem('cpf');
+    
 
     await AsyncStorage.getItem('nome').then(nome => {
       setNome(nome);
@@ -71,6 +80,8 @@ export default function MainProfessor() {
       navigation.navigate('Welcome');
     }
   };
+
+  
 
   return (
     <ScrollView
@@ -121,6 +132,13 @@ export default function MainProfessor() {
             onPress={() => navigation.navigate('Ranking')}>
             <Text style={styles.textInput}>Mostrar rank</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('AtualizarUser')}>
+            <Text style={styles.textInput}>Atualizar dados</Text>
+          </TouchableOpacity>
+
+        
           <TouchableOpacity style={styles.button} onPress={handleSubmitSair}>
             <Text style={styles.textInput}>SAIR</Text>
           </TouchableOpacity>
@@ -154,13 +172,9 @@ const styles = StyleSheet.create({
   containerForm: {
     flex: 1,
     backgroundColor: 'rgb(255,255,255)',
-    //borderRadius: 10 ,
-
     paddingStart: '5%',
     paddingEnd: '5%',
-    marginTop: '20%',
-    //borderWidth: 1,
-    // borderColor: "#404040",
+    marginTop: '13%',
     borderRadius: 5,
   },
   text: {
@@ -190,5 +204,43 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#404040',
     borderRadius: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 10,
+    height: 40,
+    marginBottom: 10,
+    fontSize: 16,
+    paddingStart: '25%',
+    backgroundColor: '#fff',
+  },
+  textInputModal: {
+    marginTop: '2%',
+    marginBottom: '1%',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  containerModal: {
+    flex: 1,
+    backgroundColor: 'rgb(255,255,255)',
+    paddingStart: '5%',
+    paddingEnd: '5%',
+    marginTop: '13%',
+    borderRadius: 5,
+
+  },
+  button2: {
+    backgroundColor: '#404040',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 14,
+    paddingVertical: 8,
+    borderRadius: 4,
+    marginBottom: 15,
+  },
+  textButton2: {
+    color: '#fff',
   },
 });
