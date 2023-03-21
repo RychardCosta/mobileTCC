@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef} from 'react';
 import {
   Alert,
   Text,
@@ -11,20 +11,24 @@ import {useHeaderHeight} from '@react-navigation/elements';
 import {useNavigation} from '@react-navigation/native';
 import api from '../../services/api.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {useForm, Controller} from 'react-hook-form';
 import * as Animatable from 'react-native-animatable';
 
 export default function Signup() {
+  const refNome = useRef("nome");
+  const refSobrenome = useRef("sobrenome");
+  const refSenha = useRef("senha");
+  const refRepetirSenha = useRef("repetirSenha");
   const navigation = useNavigation();
   const height = useHeaderHeight();
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({});
+ 
 
-  const [cpf, setCPF] = useState();
-  const [nome, setNome] = useState();
-  const [sobrenome, setSobrenome] = useState();
-  const [senha, setSenha] = useState();
-  const [repetirSenha, setRepetirSenha] = useState();
-
-  const handleSubimit = async () => {
+  const handleSubmitSignUp = async (data) => {
     try {
       await AsyncStorage.removeItem('cpf');
       await AsyncStorage.removeItem('nome');
@@ -37,15 +41,14 @@ export default function Signup() {
     }
 
     try {
-      if (cpfIsValid(cpf)) {
-        console.log('Chegou aqui');
-        if (senha === repetirSenha) {
+      if (cpfIsValid(data.cpf)) {
+        if (data.senha === data.repetirSenha) {
           const user = {
-            cpf,
-            nome,
-            sobrenome,
+            cpf: data.cpf,
+            nome: data.nome,
+            sobrenome: data.sobrenome,
             tipoDeConta: 'professor',
-            senha,
+            senha: data.senha,
           };
           const response = await api
             .post('/signup', user)
@@ -107,11 +110,12 @@ export default function Signup() {
       ]);
     }
 
-    function cpfIsValid() {
+    function cpfIsValid(cpf) {
       if (cpf.length != 11) {
         console.log('CPF deve ter 11 digitos');
         return false;
       }
+      console.log('Deu certo');
       return true;
     }
   };
@@ -123,37 +127,99 @@ export default function Signup() {
       style={styles.container}
       enabled>
       <Animatable.View animation="fadeInUp" style={styles.containerForm}>
-        <Text style={styles.titleForm}>CPF</Text>
-        <TextInput
-          keyboardType="decimal-pad"
-          onChangeText={setCPF}
-          style={styles.input}
-        />
-        <Text style={styles.titleForm}>Nome</Text>
-        <TextInput onChangeText={setNome} style={styles.input} />
-        <Text style={styles.titleForm}>Sobrenome</Text>
-        <TextInput onChangeText={setSobrenome} style={styles.input} />
-        <Text style={styles.titleForm}>Senha</Text>
-        <TextInput
-          secureTextEntry={true}
-          onChangeText={setSenha}
-          style={styles.input}
-        />
-        <Text style={styles.titleForm}>Repita a senha</Text>
-        <TextInput
-          secureTextEntry={true}
-          onChangeText={setRepetirSenha}
-          style={styles.input}
-        />
+      <Text style={styles.titleForm}>CPF</Text>
+          <Controller
+            control={control}
+            name="cpf"
+            render={({field: {onChange, value, onBlur}}) => (
+              <TextInput
+              returnKeyType = "next"
+                keyboardType="decimal-pad"
+                style={styles.input}
+                onChangeText={onChange}
+                value={value}
+                onBlur={onBlur}
+                onSubmitEditing={() => refNome.current.focus()}
+              />
+            )}
+          />
+          <Text style={styles.titleForm}>Nome</Text>
+          <Controller
+          
+            control={control}
+            name="nome"
+            render={({field: {onChange, value, onBlur}}) => (
+              <TextInput
+              returnKeyType = "next"
+                ref={refNome}
+                style={styles.input}
+                onChangeText={onChange}
+                value={value}
+                onBlur={onBlur}
+                onSubmitEditing={() => refSobrenome.current.focus()}
+              />
+            )}
+          />
+
+          <Text style={styles.titleForm}>Sobrenome</Text>
+          <Controller
+            control={control}
+            name="sobrenome"
+            render={({field: {onChange, value, onBlur}}) => (
+              <TextInput
+              returnKeyType = "next"
+              ref={refSobrenome}
+                style={styles.input}
+                onChangeText={onChange}
+                value={value}
+                onBlur={onBlur}
+                onSubmitEditing={() => refSenha.current.focus()}
+              />
+            )}
+          />
+          <Text style={styles.titleForm}>Senha</Text>
+          <Controller 
+
+            control={control}
+            name="senha"
+            render={({field: {onChange, value, onBlur}}) => (
+              <TextInput
+              returnKeyType = "next"
+              ref={refSenha}
+                secureTextEntry={true}
+                style={styles.input}
+                onChangeText={onChange}
+                value={value}
+                onBlur={onBlur}
+                onSubmitEditing={() => refRepetirSenha.current.focus()}
+              />
+            )}
+          />
+
+          <Text style={styles.titleForm}>Repita a senha</Text>
+          <Controller
+            control={control}
+            name="repetirSenha"
+            render={({field: {onChange, value, onBlur}}) => (
+              <TextInput
+              ref={refRepetirSenha}
+                secureTextEntry={true}
+                style={styles.input}
+                onChangeText={onChange}
+                value={value}
+                onBlur={onBlur}
+              />
+            )}
+          />
         <Animatable.View animation="flipInY" delay={300}>
-          <TouchableOpacity onPress={handleSubimit} style={styles.button}>
+          <TouchableOpacity onPress={handleSubmit(handleSubmitSignUp)} style={styles.button}>
             <Text style={styles.textButton}>Criar conta</Text>
           </TouchableOpacity>
         </Animatable.View>
       </Animatable.View>
     </KeyboardAvoidingView>
   );
-}
+} 
 
 const styles = StyleSheet.create({
   container: {

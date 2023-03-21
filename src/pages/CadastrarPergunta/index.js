@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {
   Alert,
   Text,
@@ -18,6 +18,13 @@ import * as Animatable from 'react-native-animatable';
 import api from '../../services/api.js';
 
 export default function CadastrarPergunta() {
+  const refPergunta = useRef("pergunta");
+  const refResposta = useRef("resposta");
+  const refOpcao1 = useRef("opcao1");
+  const refOpcao2 = useRef("opcao2");
+  const refOpcao3 = useRef("opcao3");
+  const refOpcao4 = useRef("opcao4");
+
   const {
     control,
     handleSubmit,
@@ -51,7 +58,7 @@ export default function CadastrarPergunta() {
       console.log(response.data);
     } catch (error) {
       console.log(error);
-      Alert.alert('Erro ao cadastrar imagem', response.data.message, [
+      Alert.alert('Erro ao cadastrar aluno', response.data.message, [
         {
           text: 'Ok',
           onPress: () => console.log('Botão 1 Pressionado'),
@@ -59,6 +66,7 @@ export default function CadastrarPergunta() {
       ]);
     }
   };
+
 
   return (
     <KeyboardAvoidingView
@@ -74,11 +82,14 @@ export default function CadastrarPergunta() {
             name="categoria"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
+              returnKeyType='next'
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
                 onBlur={onBlur}
                 placeholder="PADRÃO GERAL"
+                onSubmitEditing={() => refPergunta.current.focus()}
+                
               />
             )}
           />
@@ -89,10 +100,13 @@ export default function CadastrarPergunta() {
             name="pergunta"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
+              ref={refPergunta}
+              returnKeyType='next'
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
                 onBlur={onBlur}
+                onSubmitEditing={() => refResposta.current.focus()}
               />
             )}
           />
@@ -102,7 +116,9 @@ export default function CadastrarPergunta() {
             name="resposta"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-           
+              ref={refResposta}
+              returnKeyType='next'
+              onSubmitEditing={() => refOpcao1.current.focus()}
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -116,7 +132,9 @@ export default function CadastrarPergunta() {
             name="opcao1"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-           
+              ref={refOpcao1}
+              onSubmitEditing={() => refOpcao2.current.focus()}
+              returnKeyType='next'
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -130,6 +148,9 @@ export default function CadastrarPergunta() {
             name="opcao2"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
+              ref={refOpcao2}
+              onSubmitEditing={() => refOpcao3.current.focus()}
+              returnKeyType='next'
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -141,8 +162,12 @@ export default function CadastrarPergunta() {
           <Controller
             control={control}
             name="opcao3"
+            
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
+              ref={refOpcao3}
+              onSubmitEditing={() => refOpcao4.current.focus()}
+              returnKeyType='next'
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
@@ -156,6 +181,7 @@ export default function CadastrarPergunta() {
             name="opcao4"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
+              ref={refOpcao4}
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}

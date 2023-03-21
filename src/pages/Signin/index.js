@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import * as Animatable from 'react-native-animatable';
 import api from '../../services/api.js';
 
 export default function SignIn() {
+  const refSenha = useRef("senha")
   const {
     control,
     handleSubmit,
@@ -76,12 +77,21 @@ export default function SignIn() {
     }
   };
   return (
-    <View style={styles.container}>
-      <Animatable.View animation="fadeInLeft" style={styles.containerHeader}>
-        <Text style={styles.message}> BEM-VINDO(a) </Text>
+    <Animatable.View
+    source={require('../../assets/fundo2.png')}
+    style={styles.container}>
+      <Animatable.View style={{
+        backgroundColor: "#404040",
+         borderBottomEndRadius: 5,
+         borderBottomStartRadius: 5
+         }}>
+        <Text style={styles.message}> BEM-VINDO(A) </Text>
+
       </Animatable.View>
+      
+      
       <ImageBackground  
-       source={require('../../assets/fundo.png')}
+       source={require('../../assets/fundo3.png')}
       imageStyle={styles.image}
       animation="fadeInRight" style={styles.containerForm}>
         <Text style={styles.title}>CPF </Text>
@@ -91,10 +101,15 @@ export default function SignIn() {
           render={({field: {onChange, value, onBlur}}) => (
             <TextInput
               keyboardType="decimal-pad"
+              returnKeyType = "next"
               style={styles.input}
               onChangeText={onChange}
               value={value}
               onBlur={onBlur}
+              onSubmitEditing={() => refSenha.current.focus()
+             
+              }
+              
             />
           )}
         />
@@ -103,6 +118,7 @@ export default function SignIn() {
           name="senha"
           render={({field: {onChange, value, onBlur}}) => (
             <TextInput
+            ref={refSenha}
               secureTextEntry={true}
               style={styles.input}
               onChangeText={onChange}
@@ -131,7 +147,7 @@ export default function SignIn() {
             
        
       </ImageBackground>
-    </View>
+    </Animatable.View>
   );
 }
 
@@ -148,8 +164,9 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 28,
-    color: '#404040',
+    color: '#fff',
     fontWeight: 'bold',
+    
   },
   containerForm: {
     flex: 1,
@@ -195,11 +212,11 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    width: 400,
-    height: 400,
-    marginTop: 100,
+    width: "110%",
+    height: "110%",
+   
     
-    marginTop: 175
+    
 
 
     

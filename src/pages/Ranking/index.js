@@ -28,9 +28,15 @@ export default function Ranking() {
   }, [cpf, professorId]);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
+    setTimeout(async() => {
+      await AsyncStorage.getItem('cpf').then(cpf => {
+        setCpf(cpf);
+      }, []);
+      await AsyncStorage.getItem('professorId').then(professorId => {
+        setProfessorId(professorId);
+      }, []);
       
-      Dados();
+      await Dados();
       setRefreshing(false);
     }, 2000);
   }, []);

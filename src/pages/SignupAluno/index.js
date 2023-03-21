@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Alert,
   Text,
@@ -18,6 +18,10 @@ import api from '../../services/api.js';
 import * as Animatable from 'react-native-animatable';
 
 export default function SignupAluno() {
+  const refNome = useRef("nome");
+  const refSobrenome = useRef("sobrenome");
+  const refSenha = useRef("senha");
+  const refRepetirSenha = useRef("repetirSenha");
   const {
     control,
     handleSubmit,
@@ -116,25 +120,30 @@ export default function SignupAluno() {
             name="cpf"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
+              returnKeyType = "next"
                 keyboardType="decimal-pad"
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
                 onBlur={onBlur}
+                onSubmitEditing={() => refNome.current.focus()}
               />
             )}
           />
           <Text style={styles.titleForm}>Nome</Text>
           <Controller
+          
             control={control}
             name="nome"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-              
+              returnKeyType = "next"
+                ref={refNome}
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
                 onBlur={onBlur}
+                onSubmitEditing={() => refSobrenome.current.focus()}
               />
             )}
           />
@@ -145,25 +154,31 @@ export default function SignupAluno() {
             name="sobrenome"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
-                
+              returnKeyType = "next"
+              ref={refSobrenome}
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
                 onBlur={onBlur}
+                onSubmitEditing={() => refSenha.current.focus()}
               />
             )}
           />
           <Text style={styles.titleForm}>Senha</Text>
-          <Controller
+          <Controller 
+
             control={control}
             name="senha"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
+              returnKeyType = "next"
+              ref={refSenha}
                 secureTextEntry={true}
                 style={styles.input}
                 onChangeText={onChange}
                 value={value}
                 onBlur={onBlur}
+                onSubmitEditing={() => refRepetirSenha.current.focus()}
               />
             )}
           />
@@ -174,6 +189,7 @@ export default function SignupAluno() {
             name="repetirSenha"
             render={({field: {onChange, value, onBlur}}) => (
               <TextInput
+              ref={refRepetirSenha}
                 secureTextEntry={true}
                 style={styles.input}
                 onChangeText={onChange}

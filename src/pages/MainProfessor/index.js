@@ -44,25 +44,19 @@ export default function MainProfessor() {
     }
   }, [cpf]);
 
-  // useEffect( () => {
-  //   AsyncStorage.getItem('nome').then(nome => {
-  //     setNome(nome)
-  //        }, [])
-  //   AsyncStorage.getItem('cpf').then(cpf => {
-  //     setCpf(cpf)
-  //        }, [])
-  //        Alunos()
-  //        Categorias()
-  //        Perguntas()
-
-  //       });
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
-      Alunos();
-      Categorias();
-      Perguntas();
+    setTimeout(async () => {
+      await AsyncStorage.getItem('nome').then(nome => {
+        setNome(nome);
+      }, []);
+      await AsyncStorage.getItem('cpf').then(cpf => {
+        setCpf(cpf);
+      }, []);
+      await Alunos();
+      await Categorias();
+      await Perguntas();
 
       setRefreshing(false);
     }, 1000);
