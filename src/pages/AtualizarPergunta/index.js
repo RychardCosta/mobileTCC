@@ -85,7 +85,7 @@ export default function AtualizarCategoria() {
 
       const response = await api.put(`/pergunta/${perguntaSelectedComId}`, {
         newCategoria: selectedCategoria ? selectedCategoria : "GERAL",
-        novaPergunta: data.pergunta ? data.pergunta : "No",
+        novaPergunta: data.pergunta, 
         novaResposta: data.resposta,
         novaOpcao1: data.opcao1,
         novaOpcao2: data.opcao2,
