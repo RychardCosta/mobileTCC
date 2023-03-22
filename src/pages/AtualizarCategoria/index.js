@@ -86,6 +86,39 @@ export default function AtualizarCategoria() {
       console.log(error);
     }
   };
+  const handleSubmitExcluir = async data => {
+    try {
+      const selectedCategoria = await AsyncStorage.getItem("selectedCategoria")
+      const cpf = await AsyncStorage.getItem("cpf")
+      if (selectedCategoria) {
+        
+        Alert.alert('Alerta', 'Deseja exluir a categoria?.', [
+          {
+            text: 'Excluir',
+            onPress: async () => {
+              await api.delete(`/categoria/${selectedCategoria}?userId=${cpf}`)
+              console.log("Excluido com sucesso")
+              navigation.navigate("Atualizar")
+              
+            },
+          },
+          {
+            text: 'Cancelar',
+            onPress: async () => {
+              console.log("Excluido com sucesso")
+              
+            },
+          },
+        ]);
+      
+      }
+
+
+   
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -98,8 +131,8 @@ export default function AtualizarCategoria() {
           defaultValueByIndex ={0}
             data={categoria}
             search={true}
-            onSelect={(selectedItem, index) => {
-              setCategoriaSelected(selectedItem);
+            onSelect={async (selectedItem, index) => {
+              await AsyncStorage.setItem("selectedCategoria",selectedItem);
               console.log(selectedItem, index);          
             }}
           />
@@ -126,6 +159,11 @@ export default function AtualizarCategoria() {
           onPress={handleSubmit(handleSubmitAtualizarDados)}
           style={styles.button2}>
           <Text style={styles.textButton2}>Atualizar Dados</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleSubmit(handleSubmitExcluir)}
+          style={styles.button2}>
+          <Text style={styles.textButton2}>Excluir categoria</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

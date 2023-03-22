@@ -89,6 +89,37 @@ export default function AtualizarAluno() {
       console.log(error);
     }
   };
+  const handleSubmitExcluir = async data => {
+    try {
+      const selectedCpf = await AsyncStorage.getItem("selectedCpf")
+      if (selectedCpf) {
+        
+        Alert.alert('Alerta', 'Deseja exluir o aluno?.', [
+          {
+            text: 'Excluir',
+            onPress: async () => {
+              await api.delete(`/user/${selectedCpf}`)
+              console.log("Excluido com sucesso")
+              navigation.navigate("Atualizar")
+            },
+          },
+          {
+            text: 'Cancelar',
+            onPress: async () => {
+              console.log("Excluido com sucesso")
+              
+            },
+          },
+        ]);
+      
+      }
+
+
+   
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -101,8 +132,8 @@ export default function AtualizarAluno() {
           defaultValueByIndex ={0}
             data={data}
             search={true}
-            onSelect={(selectedItem, index) => {
-              setCpfSelected(selectedItem);
+            onSelect={async (selectedItem, index) => {
+              await AsyncStorage.setItem("selectedCpf",selectedItem);
               console.log(selectedItem, index);          
             }}
           />
@@ -177,6 +208,11 @@ export default function AtualizarAluno() {
           onPress={handleSubmit(handleSubmitAtualizarDados)}
           style={styles.button2}>
           <Text style={styles.textButton2}>Atualizar Dados</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleSubmit(handleSubmitExcluir)}
+          style={styles.button2}>
+          <Text style={styles.textButton2}>Exluir aluno</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

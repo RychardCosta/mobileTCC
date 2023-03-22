@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -10,12 +10,12 @@ import {
   Alert,
 } from 'react-native';
 
-import {useForm, Controller} from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import api from '../../services/api';
 
@@ -25,7 +25,7 @@ export default function AtualizarCategoria() {
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm({});
 
   const [categoriaSelected, setCategoriaSelected] = useState();
@@ -66,7 +66,7 @@ export default function AtualizarCategoria() {
       setPergunta(oldArray => [...oldArray, item.pergunta]);
       setPerguntaComId(oldArray => [
         ...oldArray,
-        {id: item.id, pergunta: item.pergunta},
+        { id: item.id, pergunta: item.pergunta },
       ]);
     }
     console.log(categoria);
@@ -85,7 +85,7 @@ export default function AtualizarCategoria() {
 
       const response = await api.put(`/pergunta/${perguntaSelectedComId}`, {
         newCategoria: selectedCategoria ? selectedCategoria : "GERAL",
-        novaPergunta: data.pergunta, 
+        novaPergunta: data.pergunta,
         novaResposta: data.resposta,
         novaOpcao1: data.opcao1,
         novaOpcao2: data.opcao2,
@@ -93,16 +93,16 @@ export default function AtualizarCategoria() {
         novaOpcao4: data.opcao4,
       });
       console.log(response.data.message)
-      if(response.data.message === "Pergunta já cadastrada"){
+      if (response.data.message === "Pergunta já cadastrada") {
         Alert.alert('Error', 'Pergunta já cadastrada".', [
           {
             text: 'Ok',
             onPress: async () => console.log("pressionaod")
-             
+
           },
         ]);
 
-      }else{
+      } else {
         Alert.alert('Sucesso', 'Atualizado com sucesso.', [
           {
             text: 'Ok',
@@ -111,6 +111,46 @@ export default function AtualizarCategoria() {
         ]);
 
       } console.log("foi")
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSubmitExcluir = async data => {
+    try {
+
+      const selectedPergunta = await AsyncStorage.getItem("selectedPergunta");
+      const cpf = await AsyncStorage.getItem("cpf");      
+
+      const perguntaSelectedComId = perguntaComId.find(
+        e => e.pergunta === selectedPergunta,
+      ).id;
+      if (perguntaSelectedComId) {
+        console.log(perguntaSelectedComId)
+
+        Alert.alert('Alerta', 'Deseja exluir a pergunta?', [
+          {
+            text: 'Excluir',
+            onPress: async () => {
+              await api.delete(`/pergunta/${perguntaSelectedComId}?userId=${cpf}`)
+              console.log("Excluido com sucesso")
+              navigation.navigate("Atualizar")
+
+            },
+          },
+          {
+            text: 'Cancelar',
+            onPress: async () => {
+              console.log("Excluido com sucesso")
+
+            },
+          },
+        ]);
+
+      }
+
+
+
     } catch (error) {
       console.log(error);
     }
@@ -125,7 +165,7 @@ export default function AtualizarCategoria() {
           data={categoria}
           search={true}
           onSelect={async (selectedItem, index) => {
-            await AsyncStorage.setItem("selectedCategoria",selectedItem);
+            await AsyncStorage.setItem("selectedCategoria", selectedItem);
             console.log(selectedItem, index);
           }}
         />
@@ -135,7 +175,7 @@ export default function AtualizarCategoria() {
           data={pergunta}
           search={true}
           onSelect={async (selectedItem, index) => {
-            await AsyncStorage.setItem("selectedPergunta",selectedItem);
+            await AsyncStorage.setItem("selectedPergunta", selectedItem);
             console.log(selectedItem, index);
           }}
         />
@@ -144,7 +184,7 @@ export default function AtualizarCategoria() {
         <Controller
           control={control}
           name="pergunta"
-          render={({field: {onChange, value, onBlur}}) => (
+          render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
               ref={refPergunta}
               style={styles.input}
@@ -158,7 +198,7 @@ export default function AtualizarCategoria() {
         <Controller
           control={control}
           name="resposta"
-          render={({field: {onChange, value, onBlur}}) => (
+          render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
               ref={refResposta}
               style={styles.input}
@@ -172,7 +212,7 @@ export default function AtualizarCategoria() {
         <Controller
           control={control}
           name="opcao1"
-          render={({field: {onChange, value, onBlur}}) => (
+          render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
               ref={refOpcao1}
               onSubmitEditing={() => refOpcao2.current.focus()}
@@ -188,7 +228,7 @@ export default function AtualizarCategoria() {
         <Controller
           control={control}
           name="opcao2"
-          render={({field: {onChange, value, onBlur}}) => (
+          render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
               ref={refOpcao2}
               onSubmitEditing={() => refOpcao3.current.focus()}
@@ -204,7 +244,7 @@ export default function AtualizarCategoria() {
         <Controller
           control={control}
           name="opcao3"
-          render={({field: {onChange, value, onBlur}}) => (
+          render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
               ref={refOpcao3}
               onSubmitEditing={() => refOpcao4.current.focus()}
@@ -220,7 +260,7 @@ export default function AtualizarCategoria() {
         <Controller
           control={control}
           name="opcao4"
-          render={({field: {onChange, value, onBlur}}) => (
+          render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
               ref={refOpcao4}
               style={styles.input}
@@ -235,6 +275,11 @@ export default function AtualizarCategoria() {
           onPress={handleSubmit(handleSubmitAtualizarDados)}
           style={styles.button2}>
           <Text style={styles.textButton2}>Atualizar Dados</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleSubmit(handleSubmitExcluir)}
+          style={styles.button2}>
+          <Text style={styles.textButton2}>Excluir pergunta</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

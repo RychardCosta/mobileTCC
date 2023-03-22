@@ -80,6 +80,39 @@ export default function AtualizarUser() {
     }
   };
 
+  const handleSubmitExcluir = async data => {
+    try {
+      const selectedCpf = await AsyncStorage.getItem("cpf")
+      if (selectedCpf) {
+        
+        Alert.alert('Alerta', 'Deseja exluir o usuário?.', [
+          {
+            text: 'Excluir',
+            onPress: async () => {
+              await api.delete(`/user/${selectedCpf}`)
+              console.log("Excluido com sucesso")
+              navigation.navigate("Atualizar")
+            },
+          },
+          {
+            text: 'Cancelar',
+            onPress: async () => {
+              console.log("Excluido com sucesso")
+              
+            },
+          },
+        ]);
+      
+      }
+
+
+   
+    } catch (error) {
+      console.log(error);
+    }
+  };
+      
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -157,6 +190,11 @@ export default function AtualizarUser() {
           onPress={handleSubmit(handleSubmitAtualizarDados)}
           style={styles.button2}>
           <Text style={styles.textButton2}>Atualizar Dados</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleSubmit(handleSubmitExcluir)}
+          style={styles.button2}>
+          <Text style={styles.textButton2}>Exluir conta</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
