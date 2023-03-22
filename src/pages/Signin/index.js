@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     marginTop: '14%',
     marginBottom: '8%',
     paddingStart: '5%',
-    justifyContent: 'flex-end',
+    //justifyContent: 'flex-end',
   },
   message: {
     fontSize: 28,

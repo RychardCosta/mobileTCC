@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -13,48 +13,58 @@ import {
 import {useForm, Controller} from 'react-hook-form';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import * as Animatable from 'react-native-animatable';
+import SelectDropdown from 'react-native-select-dropdown';
 
 import {useNavigation} from '@react-navigation/native';
 
 import api from '../../services/api';
 
-export default function AtualizarUser() {
+export default function AtualizarAluno() {
   const navigation = useNavigation();
 
-  useEffect(() => {
-    AsyncStorage.getItem('cpf').then(cpf => {
-      setCpfView(cpf);
-    });
-  });
+
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm({});
 
-  const [cpfView, setCpfView] = useState();
+  const [cpfSelected, setCpfSelected] = useState();
+  const [data, setData] = useState([]);
   const refNome = useRef('nome');
   const refSobrenome = useRef('sobrenome');
   const refSenha = useRef('senha');
   const refRepetirSenha = useRef('repetirSenha');
 
+  useEffect(() => {
+    GetUsers()
+    }, []);
+
+
+  async function GetUsers(){
+    const cpf = await AsyncStorage.getItem("cpf");
+    const response = await api.get(`/user/${cpf}`);
+
+    for(item of response.data.alunos)
+    setData(oldArray => [...oldArray, item.cpf]);
+    
+  }
+
   const handleSubmitAtualizarDados = async data => {
     try {
-      const cpf = await AsyncStorage.getItem('cpf');
+      
       const professorId = await AsyncStorage.getItem('professorId');
       if (data.name) {
         await AsyncStorage.setItem('nome', data.nome);
       }
 
-      await api.put(`/user/${cpf}`, {
+      await api.put(`/user/${cpfSelected}`, {
         nome: data.nome,
         sobrenome: data.sobrenome,
       });
 
       if (data.senha === data.repetirSenha) {
-        await api.put(`/user/${cpf}`, {
+        await api.put(`/user/${cpfSelected}`, {
           senha: data.senha,
         });
       } else {
@@ -82,11 +92,21 @@ export default function AtualizarUser() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.textHeader}>Atualização de dados</Text>
-        <Text style={styles.textHeader}>CPF: {cpfView}</Text>
-      </View>
+     
       <View style={styles.containerModal}>
+        <Text style={styles.titleForm}>CPF</Text>
+      <SelectDropdown
+                       
+          defaultButtonText="Alunos"     
+          defaultValueByIndex ={0}
+            data={data}
+            search={true}
+            onSelect={(selectedItem, index) => {
+              setCpfSelected(selectedItem);
+              console.log(selectedItem, index);          
+            }}
+          />
+
         <Text style={styles.titleForm}>Nome</Text>
         <Controller
           control={control}
@@ -219,4 +239,7 @@ const styles = StyleSheet.create({
   textButton2: {
     color: '#fff',
   },
+  titleForm: {
+    color: "#000"
+  }
 });

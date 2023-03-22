@@ -11,7 +11,11 @@ import CadastrarCategoria from '../pages/CadastrarCategoria';
 import CadastrarPergunta from '../pages/CadastrarPergunta';
 import Ranking from '../pages/Ranking';
 import CategoriaJogo from '../pages/CategoriaJogo';
+import Atualizar from '../pages/Atualizar';
 import AtualizarUser from '../pages/AtualizarUser';
+import AtualizarAluno from '../pages/AtualizarAluno';
+import AtualizarCategoria from '../pages/AtualizarCategoria';
+import AtualizarPergunta from '../pages/AtualizarPergunta';
 
 const Stack = createStackNavigator();
 
@@ -82,6 +86,26 @@ export default function Routes() {
         name="AtualizarUser"
         component={AtualizarUser}
         options={ {headerShown: false}}
+      />
+      <Stack.Screen
+        name="Atualizar"
+        component={Atualizar}
+        options={{title: 'Atualização de dados', headerShown: true}}
+      />
+      <Stack.Screen
+        name="AtualizarAluno"
+        component={AtualizarAluno}
+        options={{title: 'Atualização de alunos', headerShown: true}}
+      />
+      <Stack.Screen
+        name="AtualizarCategoria"
+        component={AtualizarCategoria}
+        options={{title: 'Atualização de categoria', headerShown: true}}
+      />
+      <Stack.Screen
+        name="AtualizarPergunta"
+        component={AtualizarPergunta}
+        options={{title: 'Atualização de pergunta', headerShown: true}}
       />
     </Stack.Navigator>
   );

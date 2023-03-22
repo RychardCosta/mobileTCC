@@ -1,39 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-
-  SafeAreaView
-} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Text, TouchableOpacity, StyleSheet, SafeAreaView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 import * as Animatable from 'react-native-animatable';
 
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 export default function MainProfessor() {
-
-
- 
   const navigation = useNavigation();
   const [nome, setNome] = useState();
-
-
-
-
 
   useEffect(() => {
     AsyncStorage.getItem('nome').then(nome => {
       setNome(nome);
     }, []);
-  
   }, []);
-
- 
-
-
 
   const handleSubmitSair = async () => {
     try {
@@ -52,13 +33,8 @@ export default function MainProfessor() {
 
   return (
     <SafeAreaView>
-
-
       <Animatable.View animation="fadeInDown" style={styles.header}>
-        <Text style={styles.textHeader}>
-          {' '}
-          {`Bem vindo ${nome}`}
-        </Text>
+        <Text style={styles.textHeader}> {`Bem vindo ${nome}`}</Text>
 
         <Text style={styles.textHeader2}></Text>
       </Animatable.View>
@@ -78,27 +54,15 @@ export default function MainProfessor() {
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("AtualizarUser")}>
+            onPress={() => navigation.navigate('AtualizarUser')}>
             <Text style={styles.textInput}>Atualizar dados</Text>
           </TouchableOpacity>
-
-
-
 
           <TouchableOpacity style={styles.button} onPress={handleSubmitSair}>
             <Text style={styles.textInput}>SAIR</Text>
           </TouchableOpacity>
-
-
         </Animatable.View>
-
-
-
-
       </Animatable.View>
-
-
-
     </SafeAreaView>
   );
 }
@@ -127,7 +91,6 @@ const styles = StyleSheet.create({
   containerForm: {
     flex: 1,
     backgroundColor: '#fff',
-
 
     paddingStart: '5%',
     paddingEnd: '5%',
@@ -160,5 +123,4 @@ const styles = StyleSheet.create({
     borderColor: '#404040',
     borderRadius: 5,
   },
-})
-
+});

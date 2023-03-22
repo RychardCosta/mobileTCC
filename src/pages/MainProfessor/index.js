@@ -134,7 +134,7 @@ export default function MainProfessor() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('AtualizarUser')}>
+            onPress={() => navigation.navigate('Atualizar')}>
             <Text style={styles.textInput}>Atualizar dados</Text>
           </TouchableOpacity>
 
