@@ -74,19 +74,25 @@ export default function AtualizarCategoria() {
 
   const handleSubmitAtualizarDados = async data => {
     try {
+      const selectedPergunta = await AsyncStorage.getItem("selectedPergunta")
+      console.log(selectedPergunta)
       const perguntaSelectedComId = perguntaComId.find(
-        e => e.pergunta === perguntaSelected,
+        e => e.pergunta === selectedPergunta,
       ).id;
+      const selectedCategoria = await AsyncStorage.getItem("selectedCategoria")
+      console.log("perguntaSelectedComId")
+      console.log(perguntaSelectedComId)
 
       const response = await api.put(`/pergunta/${perguntaSelectedComId}`, {
-        newCategoria: categoriaSelected,
-        novaPergunta: data.pergunta,
+        newCategoria: selectedCategoria ? selectedCategoria : "GERAL",
+        novaPergunta: data.pergunta ? data.pergunta : "No",
         novaResposta: data.resposta,
         novaOpcao1: data.opcao1,
         novaOpcao2: data.opcao2,
         novaOpcao3: data.opcao3,
         novaOpcao4: data.opcao4,
       });
+      console.log(response.data.message)
       if(response.data.message === "Pergunta já cadastrada"){
         Alert.alert('Error', 'Pergunta já cadastrada".', [
           {
@@ -104,7 +110,7 @@ export default function AtualizarCategoria() {
           },
         ]);
 
-      }
+      } console.log("foi")
     } catch (error) {
       console.log(error);
     }
@@ -118,8 +124,8 @@ export default function AtualizarCategoria() {
           defaultValueByIndex={0}
           data={categoria}
           search={true}
-          onSelect={(selectedItem, index) => {
-            setCategoriaSelected(selectedItem);
+          onSelect={async (selectedItem, index) => {
+            await AsyncStorage.setItem("selectedCategoria",selectedItem);
             console.log(selectedItem, index);
           }}
         />
@@ -128,8 +134,8 @@ export default function AtualizarCategoria() {
           defaultValueByIndex={0}
           data={pergunta}
           search={true}
-          onSelect={(selectedItem, index) => {
-            setPerguntaSelected(selectedItem);
+          onSelect={async (selectedItem, index) => {
+            await AsyncStorage.setItem("selectedPergunta",selectedItem);
             console.log(selectedItem, index);
           }}
         />
