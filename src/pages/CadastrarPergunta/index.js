@@ -20,7 +20,6 @@ import api from '../../services/api.js';
 
 export default function CadastrarPergunta() {
   const [categoria, setCategoria] = useState([]);
-  const [categoriaEscolhida, setCategoriaEscolhida] = useState([]);
   const refPergunta = useRef('pergunta');
   const refResposta = useRef('resposta');
   const refOpcao1 = useRef('opcao1');
@@ -37,10 +36,10 @@ export default function CadastrarPergunta() {
   const height = useHeaderHeight();
 
   const handleSubmitCriarPergunta = async (data) => {
-    console.log("categoriaEscolhida");
-    console.log(categoriaEscolhida);
+ 
     try {
       const cpf = await AsyncStorage.getItem('cpf');
+      const categoriaEscolhida = await AsyncStorage.getItem("categoriaEscolhida")
 
       const response = await api.post('pergunta', {
         pergunta: data.pergunta,
@@ -113,8 +112,9 @@ export default function CadastrarPergunta() {
           defaultValueByIndex ={0}
             data={categoria}
             search={true}
-            onSelect={(selectedItem, index) => {
-              setCategoriaEscolhida(selectedItem);
+            onSelect={async (selectedItem, index) => {
+              await AsyncStorage.setItem("categoriaEscolhida", selectedItem)
+              
               console.log(selectedItem, index);          
             }}
           />
@@ -216,7 +216,7 @@ export default function CadastrarPergunta() {
           />
           <Animatable.View animation="flipInY" delay={300}>
             <TouchableOpacity
-              onPress={handleSubmit(handleSubmitCriarPergunta, categoriaEscolhida)}
+              onPress={handleSubmit(handleSubmitCriarPergunta)}
               style={styles.button}>
               <Text style={styles.textButton}>Criar pergunta</Text>
             </TouchableOpacity>
