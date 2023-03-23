@@ -91,7 +91,7 @@ export default function AtualizarUser() {
             onPress: async () => {
               await api.delete(`/user/${selectedCpf}`)
               console.log("Excluido com sucesso")
-              navigation.navigate("Atualizar")
+              navigation.navigate("SignIn")
             },
           },
           {
