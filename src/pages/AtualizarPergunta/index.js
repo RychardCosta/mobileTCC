@@ -28,9 +28,8 @@ export default function AtualizarCategoria() {
     formState: { errors },
   } = useForm({});
 
-  const [categoriaSelected, setCategoriaSelected] = useState();
+
   const [categoria, setCategoria] = useState([]);
-  const [perguntaSelected, setPerguntaSelected] = useState();
   const [pergunta, setPergunta] = useState([]);
   const [perguntaComId, setPerguntaComId] = useState([]);
   const refPergunta = useRef('pergunta');
@@ -106,7 +105,7 @@ export default function AtualizarCategoria() {
         Alert.alert('Sucesso', 'Atualizado com sucesso.', [
           {
             text: 'Ok',
-            onPress: async () => navigation.navigate('MainProfessor'),
+            onPress: async () => navigation.navigate('Atualizar'),
           },
         ]);
 
@@ -180,7 +179,7 @@ export default function AtualizarCategoria() {
           }}
         />
 
-        <Text style={styles.titleForm}>Pergunta</Text>
+        <Text style={styles.titleForm}>Pergunta: {}</Text>
         <Controller
           control={control}
           name="pergunta"
