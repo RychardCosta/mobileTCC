@@ -24,9 +24,7 @@ export default function CategoriaJogo() {
   const goToGame = (item) => {
     navigation.navigate("Jogo", { categoriaID: item.id })
 
-
   }
-
   const categorias = async () => {
     const cpf = await AsyncStorage.getItem('cpf');
     const professorId = await AsyncStorage.getItem('professorId');

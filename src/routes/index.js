@@ -16,6 +16,8 @@ import AtualizarUser from '../pages/AtualizarUser';
 import AtualizarAluno from '../pages/AtualizarAluno';
 import AtualizarCategoria from '../pages/AtualizarCategoria';
 import AtualizarPergunta from '../pages/AtualizarPergunta';
+import CadastrarEstudo from '../pages/CadastrarEstudo';
+import Cadastro from '../pages/Cadastro';
 
 const Stack = createStackNavigator();
 
@@ -106,6 +108,16 @@ export default function Routes() {
         name="AtualizarPergunta"
         component={AtualizarPergunta}
         options={{title: 'Atualização de pergunta', headerShown: true}}
+      />
+      <Stack.Screen
+        name="CadastrarEstudo"
+        component={CadastrarEstudo}
+        options={{title: 'Cadastrar estudo', headerShown: true}}
+      />
+      <Stack.Screen
+        name="Cadastro"
+        component={Cadastro}
+        options={{title: 'Cadastro', headerShown: true}}
       />
     </Stack.Navigator>
   );

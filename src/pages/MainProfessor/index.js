@@ -114,20 +114,10 @@ export default function MainProfessor() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('SignupAluno')}>
-            <Text style={styles.textInput}>Cadastrar aluno</Text>
+            onPress={() => navigation.navigate('Cadastro')}>
+            <Text style={styles.textInput}>Cadastro </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('CadastrarCategoria')}>
-            <Text style={styles.textInput}>Cadastrar categoria</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('CadastrarPergunta')}>
-            <Text style={styles.textInput}>Cadastrar pergunta</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+              <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('Ranking')}>
             <Text style={styles.textInput}>Mostrar rank</Text>
