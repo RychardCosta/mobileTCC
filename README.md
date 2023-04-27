@@ -1,3 +1,3 @@
 # mobileTCC
 
-Apk da aplicação gerado em: APK
+Apk da aplicação gerado em: app-debug.apk
